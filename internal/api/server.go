@@ -1,26 +1,43 @@
 package api
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
 type Server struct {
-	c aquareo.Controller
+	c    aquareo.Controller
+	http *http.Server
 }
 
 func NewServer(config aquareo.Config, c aquareo.Controller) *Server {
-	return &Server{c}
+	return &Server{c: c}
 }
 
-func (s Server) Start(addr string) {
-	log.Println("Starting API Server")
+func (s *Server) Start(addr string) {
+	log.Println("api: Server started")
 
 	r := mux.NewRouter()
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
 
-	log.Fatal(http.ListenAndServe(addr, r))
+	s.http = &http.Server{
+		Addr:         addr,
+		Handler:      r,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
+	}
+
+	log.Fatal(s.http.ListenAndServe())
+}
+
+func (s *Server) Stop(ctx context.Context) {
+	if s.http != nil {
+		log.Println("api: server stopped")
+		_ = s.http.Shutdown(ctx)
+	}
 }

@@ -1,15 +1,19 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/pedrobfernandes/aquareo/internal/api"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/pedrobfernandes/aquareo/internal/device"
-	"github.com/pedrobfernandes/aquareo/internal/io"
 	"github.com/pedrobfernandes/aquareo/internal/sensor"
+	"github.com/pedrobfernandes/aquareo/internal/store"
 	"io/ioutil"
 	"log"
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
@@ -18,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fileStorage := io.NewFileStorage()
+	fileStorage := store.NewFileStore()
 
 	controller := device.NewRPiController(fileStorage)
 	if err := controller.Open(); err != nil {
@@ -27,14 +31,27 @@ func main() {
 	defer controller.Close()
 
 	server := api.NewServer(config, controller)
-	commander := sensor.NewCommander(config)
+	commander := sensor.NewCommander(config, controller)
+
+	done := make(chan struct{})
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
 	app := aquareo.NewApp(config, controller, server, commander)
 
-	var wg sync.WaitGroup
-	defer wg.Wait()
+	app.Start()
 
-	app.Start(&wg)
+	go func() {
+		defer close(done)
+		<-signals
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		app.Stop(ctx)
+	}()
+
+	<-done
 }
 
 func loadConfigFile(filename string) (aquareo.Config, error) {

@@ -18,8 +18,8 @@ func NewRPiController(store aquareo.Store) *controller {
 }
 
 func (c *controller) Open() error {
-	//return rpio.Open()
-	return nil
+	return rpio.Open()
+	//return nil
 }
 
 func (c *controller) Close() error {

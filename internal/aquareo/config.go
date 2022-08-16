@@ -5,6 +5,8 @@ const (
 	SensorTemp2    = "temperature_2"
 	SensorPh       = "ph"
 	SensorSalinity = "salinity"
+	SensorSysTemp  = "sys_temp"
+	SensorSysMem   = "sys_mem"
 	DSL8B20        = "dsl8b20"
 )
 

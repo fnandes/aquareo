@@ -1,7 +1,7 @@
 package aquareo
 
 import (
-	"sync"
+	"context"
 )
 
 type App struct {
@@ -20,22 +20,24 @@ func NewApp(config Config, c Controller, server WebServer, commander SensorComma
 	}
 }
 
-func (a *App) Start(wg *sync.WaitGroup) {
-	wg.Add(1)
+func (a *App) Stop(ctx context.Context) {
+	a.ws.Stop(ctx)
+	a.sc.Stop(ctx)
+}
+
+func (a *App) Start() {
 	go func() {
-		defer wg.Done()
-		a.ws.Start(":8080")
+		a.ws.Start(":8082")
 	}()
 
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
 		a.sc.Start()
 	}()
 }
 
 type WebServer interface {
 	Start(addr string)
+	Stop(ctx context.Context)
 }
 
 type Controller interface {
@@ -51,12 +53,14 @@ type Controller interface {
 }
 
 type Sensor interface {
-	CurrentValue()
-	Collect()
+	Id() string
+	CurrentValue() float32
+	Refresh() error
 }
 
 type SensorCommander interface {
 	Start()
+	Stop(ctx context.Context)
 }
 
 type Store interface {
