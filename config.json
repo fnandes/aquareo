@@ -1,0 +1,17 @@
+{
+  "name": "Main Aquarium",
+  "sensors": [
+    {
+      "id": "temperature_1",
+      "name": "Temperature Display",
+      "type": "dsl8b20",
+      "serial_nr": "28-dasdadasda2"
+    },
+    {
+      "id": "temperature_2",
+      "name": "Temperature Display",
+      "type": "dsl8b20",
+      "serial_nr": "28-dasdadasdas"
+    }
+  ]
+}
