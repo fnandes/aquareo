@@ -3,18 +3,19 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/pedrobfernandes/aquareo/internal/api"
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/device"
-	"github.com/pedrobfernandes/aquareo/internal/sensor"
-	"github.com/pedrobfernandes/aquareo/internal/store"
-	"go.etcd.io/bbolt"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/pedrobfernandes/aquareo/internal/api"
+	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/pedrobfernandes/aquareo/internal/device"
+	"github.com/pedrobfernandes/aquareo/internal/sensor"
+	"github.com/pedrobfernandes/aquareo/internal/store"
+	"go.etcd.io/bbolt"
 )
 
 func main() {
@@ -31,7 +32,7 @@ func main() {
 	boltStore := store.NewBoltDbStore(db)
 	controller := device.NewRPiController(boltStore)
 
-	if err := controller.Open(); err != nil {
+	if err := controller.Init(); err != nil {
 		log.Fatal("Failed to start controller: ", err)
 	}
 	defer controller.Close()

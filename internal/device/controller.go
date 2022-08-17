@@ -1,6 +1,8 @@
 package device
 
 import (
+	"fmt"
+
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/stianeikeland/go-rpio"
 )
@@ -17,9 +19,12 @@ func NewRPiController(store aquareo.Store) *controller {
 	}
 }
 
-func (c *controller) Open() error {
-	return rpio.Open()
-	//return nil
+func (c *controller) Init() error {
+	if err := rpio.Open(); err != nil {
+		return fmt.Errorf("controller: Failed to open the GPIO access: %w", err)
+	}
+
+	return nil
 }
 
 func (c *controller) Close() error {
@@ -46,8 +51,21 @@ func (c *controller) Low(pin uint8) {
 	rpio.Pin(pin).Low()
 }
 
-func (c *controller) AddSensor(id string, sensor aquareo.Sensor) error {
-	c.sensors[id] = sensor
+func (c *controller) Sensors() []aquareo.Sensor {
+	var arr []aquareo.Sensor
+
+	for _, s := range c.sensors {
+		arr = append(arr, s)
+	}
+	return arr
+}
+
+func (c *controller) RegisterSensor(sensor aquareo.Sensor) error {
+	if err := c.store.CreateBucketIfNotExists(sensor.Id()); err != nil {
+		return fmt.Errorf("controller: Failed to create store bucket for sensor %s: %w", sensor.Id(), err)
+	}
+
+	c.sensors[sensor.Id()] = sensor
 	return nil
 }
 

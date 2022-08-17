@@ -48,7 +48,8 @@ type Controller interface {
 	High(pin uint8)
 	Low(pin uint8)
 
-	AddSensor(sensorId string, sensor Sensor) error
+	RegisterSensor(sensor Sensor) error
+	Sensors() []Sensor
 	Sensor(sensorId string) Sensor
 }
 
@@ -64,6 +65,7 @@ type SensorCommander interface {
 }
 
 type Store interface {
+	CreateBucketIfNotExists(bucket string) error
 	Store(bucket string, entry MetricEntry) error
 	ReadAll(bucket string, size int) []MetricEntry
 }

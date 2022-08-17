@@ -2,16 +2,17 @@ package sensor
 
 import (
 	"context"
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/device"
+	"fmt"
 	"log"
 	"time"
+
+	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/pedrobfernandes/aquareo/internal/device"
 )
 
 type cmd struct {
 	ctrl    aquareo.Controller
 	config  aquareo.Config
-	sensors []aquareo.Sensor
 	stopped chan struct{}
 }
 
@@ -19,13 +20,16 @@ func NewCommander(config aquareo.Config, c aquareo.Controller) *cmd {
 	return &cmd{
 		config:  config,
 		ctrl:    c,
-		sensors: configureSensors(config),
 		stopped: make(chan struct{}),
 	}
 }
 
 func (c *cmd) Start() {
 	log.Println("sensors: Module started")
+
+	if err := c.configureSensors(); err != nil {
+		log.Fatal(err)
+	}
 
 	for {
 		select {
@@ -34,7 +38,7 @@ func (c *cmd) Start() {
 		default:
 		}
 
-		for _, s := range c.sensors {
+		for _, s := range c.ctrl.Sensors() {
 			if err := s.Refresh(); err != nil {
 				log.Printf("sensors: Failed to refresh: %s: %v\n", s.Id(), err.Error())
 			}
@@ -54,17 +58,19 @@ func (c *cmd) Stop(ctx context.Context) {
 	log.Println("sensors: Module closed")
 }
 
-func configureSensors(config aquareo.Config) []aquareo.Sensor {
-	var sensors []aquareo.Sensor
-
-	for _, s := range config.Sensors {
+func (c *cmd) configureSensors() error {
+	for _, s := range c.config.Sensors {
 		if s.Type == aquareo.DSL8B20 {
-			sensors = append(sensors, device.NewDsl8b20Sensor(s.Id, s.Name))
+			if err := c.ctrl.RegisterSensor(device.NewDsl8b20Sensor(s.Id, s.Name)); err != nil {
+				return fmt.Errorf("sensor commander: Failed to register sensor: %w", err)
+			}
 		}
 	}
 
 	// add the system temperature sensor
-	sensors = append(sensors, device.NewSysTempSensor(aquareo.SensorSysTemp, "Controller Temperature"))
+	if err := c.ctrl.RegisterSensor(device.NewSysTempSensor(aquareo.SensorSysTemp, "Controller Temperature")); err != nil {
+		return fmt.Errorf("sensor commander: Failed to register sensor: %w", err)
+	}
 
-	return sensors
+	return nil
 }
