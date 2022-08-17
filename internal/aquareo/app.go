@@ -64,7 +64,7 @@ type SensorCommander interface {
 }
 
 type Store interface {
-	Store(bucket string, entry MetricEntry)
+	Store(bucket string, entry MetricEntry) error
 	ReadAll(bucket string, size int) []MetricEntry
 }
 type MetricEntry struct {

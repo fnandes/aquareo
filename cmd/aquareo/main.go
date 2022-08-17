@@ -8,6 +8,7 @@ import (
 	"github.com/pedrobfernandes/aquareo/internal/device"
 	"github.com/pedrobfernandes/aquareo/internal/sensor"
 	"github.com/pedrobfernandes/aquareo/internal/store"
+	"go.etcd.io/bbolt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -19,14 +20,19 @@ import (
 func main() {
 	config, err := loadConfigFile("config.json")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to load the config.json file: ", err)
 	}
 
-	fileStorage := store.NewFileStore()
+	db, err := bbolt.Open("aquareo.db", 0600, nil)
+	if err != nil {
+		log.Fatal("Failed to get a database connection: ", err)
+	}
 
-	controller := device.NewRPiController(fileStorage)
+	boltStore := store.NewBoltDbStore(db)
+	controller := device.NewRPiController(boltStore)
+
 	if err := controller.Open(); err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to start controller: ", err)
 	}
 	defer controller.Close()
 
