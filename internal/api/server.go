@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
@@ -22,8 +21,9 @@ func NewServer(config aquareo.Config, c aquareo.Controller) *Server {
 func (s *Server) Start(addr string) {
 	log.Println("api: Server started")
 
-	r := mux.NewRouter()
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./web")))
+	r := &handler{
+		c: s.c,
+	}
 
 	s.http = &http.Server{
 		Addr:         addr,

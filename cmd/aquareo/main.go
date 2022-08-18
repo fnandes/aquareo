@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -28,14 +29,26 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to get a database connection: ", err)
 	}
+	defer db.Close()
 
 	boltStore := store.NewBoltDbStore(db)
 	controller := device.NewRPiController(boltStore)
 
-	if err := controller.Init(); err != nil {
+	if err := controller.Init(config); err != nil {
 		log.Fatal("Failed to start controller: ", err)
 	}
 	defer controller.Close()
+
+	if err := db.Update(func(tx *bbolt.Tx) error {
+		for _, s := range controller.Sensors() {
+			if _, err := tx.CreateBucketIfNotExists([]byte(s.Id())); err != nil {
+				return fmt.Errorf("Failed to create bucket: %w", err)
+			}
+		}
+		return nil
+	}); err != nil {
+		log.Fatal(err)
+	}
 
 	server := api.NewServer(config, controller)
 	commander := sensor.NewCommander(config, controller)

@@ -42,13 +42,6 @@ type WebServer interface {
 
 type Controller interface {
 	Store() Store
-
-	SetInput(pin uint8)
-	SetOutput(pin uint8)
-	High(pin uint8)
-	Low(pin uint8)
-
-	RegisterSensor(sensor Sensor) error
 	Sensors() []Sensor
 	Sensor(sensorId string) Sensor
 }
@@ -67,7 +60,7 @@ type SensorCommander interface {
 type Store interface {
 	CreateBucketIfNotExists(bucket string) error
 	Store(bucket string, entry MetricEntry) error
-	ReadAll(bucket string, size int) []MetricEntry
+	ReadAll(bucket string, size int) ([]MetricEntry, error)
 }
 type MetricEntry struct {
 	Timespan int

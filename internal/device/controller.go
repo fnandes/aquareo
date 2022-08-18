@@ -19,10 +19,20 @@ func NewRPiController(store aquareo.Store) *controller {
 	}
 }
 
-func (c *controller) Init() error {
+func (c *controller) Init(conf aquareo.Config) error {
 	if err := rpio.Open(); err != nil {
 		return fmt.Errorf("controller: Failed to open the GPIO access: %w", err)
 	}
+
+	// register all sensors
+	for _, s := range conf.Sensors {
+		if s.Type == aquareo.DSL8B20 {
+			c.sensors[s.Id] = NewDsl8b20Sensor(s.Id, s.Name)
+		}
+	}
+
+	// add the system temperature sensor
+	c.sensors[aquareo.SensorSysTemp] = NewSysTempSensor(aquareo.SensorSysTemp, "Controller Temperature")
 
 	return nil
 }
@@ -33,22 +43,6 @@ func (c *controller) Close() error {
 
 func (c *controller) Store() aquareo.Store {
 	return c.store
-}
-
-func (c *controller) SetInput(pin uint8) {
-	rpio.Pin(pin).Input()
-}
-
-func (c *controller) SetOutput(pin uint8) {
-	rpio.Pin(pin).Output()
-}
-
-func (c *controller) High(pin uint8) {
-	rpio.Pin(pin).High()
-}
-
-func (c *controller) Low(pin uint8) {
-	rpio.Pin(pin).Low()
 }
 
 func (c *controller) Sensors() []aquareo.Sensor {
