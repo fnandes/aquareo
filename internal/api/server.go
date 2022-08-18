@@ -11,18 +11,20 @@ import (
 
 type Server struct {
 	c    aquareo.Controller
+	cfg  aquareo.Config
 	http *http.Server
 }
 
 func NewServer(config aquareo.Config, c aquareo.Controller) *Server {
-	return &Server{c: c}
+	return &Server{c: c, cfg: config}
 }
 
 func (s *Server) Start(addr string) {
 	log.Println("api: Server started")
 
 	r := &handler{
-		c: s.c,
+		c:   s.c,
+		cfg: s.cfg,
 	}
 
 	s.http = &http.Server{

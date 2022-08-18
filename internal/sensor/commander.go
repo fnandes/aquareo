@@ -38,7 +38,7 @@ func (c *cmd) Start() {
 			}
 
 			err := c.ctrl.Store().Store(s.Id(), aquareo.MetricEntry{
-				Timespan: int(time.Now().UTC().Unix()),
+				Timespan: time.Now().UTC().Unix(),
 				Value:    s.CurrentValue(),
 			})
 			if err != nil {

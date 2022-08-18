@@ -34,7 +34,7 @@ func (s *store) Store(bucket string, entry aquareo.MetricEntry) error {
 	return s.db.Update(func(tx *bbolt.Tx) error {
 		var kbuf, vbuf bytes.Buffer
 
-		if err := binary.Write(&kbuf, binary.LittleEndian, float32(entry.Timespan)); err != nil {
+		if err := binary.Write(&kbuf, binary.LittleEndian, entry.Timespan); err != nil {
 			return fmt.Errorf("bbolt: Failed to get bytes from key: %w", err)
 		}
 
@@ -53,9 +53,9 @@ func (s *store) ReadAll(bucket string, size int) ([]aquareo.MetricEntry, error) 
 		cur := tx.Bucket([]byte(bucket)).Cursor()
 		i := 0
 
-		for k, v := cur.First(); k != nil && i < size; k, v = cur.Next() {
+		for k, v := cur.Last(); k != nil && i < size; k, v = cur.Prev() {
 			arr = append(arr, aquareo.MetricEntry{
-				Timespan: int(binary.LittleEndian.Uint32(k)),
+				Timespan: int64(binary.LittleEndian.Uint64(k)),
 				Value:    math.Float32frombits((binary.LittleEndian.Uint32(v))),
 			})
 			i += 1

@@ -63,6 +63,6 @@ type Store interface {
 	ReadAll(bucket string, size int) ([]MetricEntry, error)
 }
 type MetricEntry struct {
-	Timespan int
+	Timespan int64
 	Value    float32
 }

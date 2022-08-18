@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "ES2019",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "jsx": "react",
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true
+  },
+  "include": ["./web/src/**/*", "./web/typings/*.d.ts"]
+}
