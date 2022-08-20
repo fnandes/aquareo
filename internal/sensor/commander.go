@@ -3,9 +3,15 @@ package sensor
 import (
 	"context"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+)
+
+const (
+	RefreshThresholdSecs = 2
+	StoreThresholdSecs   = 60
 )
 
 type cmd struct {
@@ -24,29 +30,44 @@ func NewCommander(config aquareo.Config, c aquareo.Controller) *cmd {
 
 func (c *cmd) Start() {
 	log.Println("sensors: Module started")
+	var wg sync.WaitGroup
 
-	for {
-		select {
-		case <-c.stopped:
-			return
-		default:
-		}
-
+	go c.schedule(&wg, RefreshThresholdSecs*time.Second, func() {
 		for _, s := range c.ctrl.Sensors() {
 			if err := s.Refresh(); err != nil {
 				log.Printf("sensors: Failed to refresh: %s: %v\n", s.Id(), err.Error())
 			}
+		}
+	})
 
+	go c.schedule(&wg, StoreThresholdSecs*time.Second, func() {
+		for _, s := range c.ctrl.Sensors() {
 			err := c.ctrl.Store().Store(s.Id(), aquareo.MetricEntry{
 				Timespan: time.Now().UTC().Unix(),
 				Value:    s.CurrentValue(),
 			})
 			if err != nil {
-				log.Println("sensors: Failed to store: ", err.Error())
+				log.Printf("sensors: Failed to store %s: %v\n", s.Id(), err.Error())
 			}
 		}
+	})
 
-		time.Sleep(5 * time.Second)
+	wg.Wait()
+}
+
+func (c *cmd) schedule(wg *sync.WaitGroup, threshold time.Duration, task func()) {
+	wg.Add(1)
+	defer wg.Done()
+
+	for {
+		time.Sleep(threshold)
+
+		select {
+		case <-c.stopped:
+			return
+		default:
+		}
+		task()
 	}
 }
 

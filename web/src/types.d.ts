@@ -4,6 +4,6 @@ export type Metric = {
 }
 
 export type MetricRecord = {
-  timespan: number
-  value: number
+  Timespan: number
+  Value: number
 }

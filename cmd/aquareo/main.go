@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"github.com/pedrobfernandes/aquareo/internal/daemon"
 	"io/ioutil"
 	"log"
 	"os"
@@ -11,11 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/api"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/device"
-	"github.com/pedrobfernandes/aquareo/internal/sensor"
-	"github.com/pedrobfernandes/aquareo/internal/store"
 	"go.etcd.io/bbolt"
 )
 
@@ -31,35 +27,14 @@ func main() {
 	}
 	defer db.Close()
 
-	boltStore := store.NewBoltDbStore(db)
-	controller := device.NewRPiController(boltStore)
-
-	if err := controller.Init(config); err != nil {
-		log.Fatal("Failed to start controller: ", err)
-	}
-	defer controller.Close()
-
-	if err := db.Update(func(tx *bbolt.Tx) error {
-		for _, s := range controller.Sensors() {
-			if _, err := tx.CreateBucketIfNotExists([]byte(s.Id())); err != nil {
-				return fmt.Errorf("Failed to create bucket: %w", err)
-			}
-		}
-		return nil
-	}); err != nil {
-		log.Fatal(err)
-	}
-
-	server := api.NewServer(config, controller)
-	commander := sensor.NewCommander(config, controller)
-
 	done := make(chan struct{})
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	app := aquareo.NewApp(config, controller, server, commander)
-
-	app.Start()
+	app := daemon.NewDaemon(config, db)
+	if err := app.Start(); err != nil {
+		log.Fatal(err)
+	}
 
 	go func() {
 		defer close(done)

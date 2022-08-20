@@ -27,8 +27,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({ id, name }) => {
         <div className='px-4 pt-2 pb-4 font-semibold'>{name}</div>
         <div className='relative overflow-hidden'>
           <ResponsiveContainer height={300} width="99%">
-            <LineChart data={data} margin={{}}>
-              <XAxis dataKey="Timespan" tickFormatter={val => moment(val).format('HH:mm')} stroke={colors.indigo[500]} />
+            <LineChart data={data.sort((a, b) => a.Timespan - b.Timespan)}>
+              <XAxis dataKey="Timespan" tickFormatter={val => moment.unix(val).format('hh:mm')} stroke={colors.indigo[500]} />
               <YAxis domain={['auto', 'auto']} stroke={colors.indigo[400]} strokeWidth={0} padding={{}} />
               <Tooltip />
               <Line type="monotone" dataKey="Value" stroke={colors.purple[500]} strokeWidth={2} unit="C" />

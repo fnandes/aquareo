@@ -54,15 +54,6 @@ func (c *controller) Sensors() []aquareo.Sensor {
 	return arr
 }
 
-func (c *controller) RegisterSensor(sensor aquareo.Sensor) error {
-	if err := c.store.CreateBucketIfNotExists(sensor.Id()); err != nil {
-		return fmt.Errorf("controller: Failed to create store bucket for sensor %s: %w", sensor.Id(), err)
-	}
-
-	c.sensors[sensor.Id()] = sensor
-	return nil
-}
-
 func (c *controller) Sensor(id string) aquareo.Sensor {
 	return c.sensors[id]
 }

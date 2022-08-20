@@ -16,10 +16,14 @@ type handler struct {
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r := mux.NewRouter()
+
+	r.PathPrefix("/ui/").Handler(
+		http.StripPrefix("/ui/", http.FileServer(http.Dir("ui/"))),
+	)
 	r.Use(corsMiddleware)
-	r.PathPrefix("/static").Handler(http.FileServer(http.Dir("./ui")))
 
 	r.HandleFunc("/", func(w http.ResponseWriter, res *http.Request) {
+		w.Header().Add("Content-Type", "text/html")
 		http.ServeFile(w, res, "ui/index.html")
 	})
 	r.HandleFunc("/metrics", h.ListMetrics).Methods("GET")
