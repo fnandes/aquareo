@@ -12,7 +12,7 @@ Automatic turn on/off your header and fan/chiller to keep a stable temperature i
 ### 🪣 Auto Top-Off
 Automatic evaporated water refill. Controls your salinity level to keep a healthy environment.
 
-### Dosing automation
+### 🧪 Dosing automation
 Setups the dosing system to perform your dosing/balling.
 
 And more ...
@@ -20,7 +20,7 @@ And more ...
 ### 📦 Fully modular
 Despite everything is meant to be built in a single box, you don't need to build all features at one. For instance: you can build only the monitoring component, add the dosing automation later, or use only the auto top-off system.
 
-### 🧮 Easy and inexpensive to build
+### 💸 Easy and inexpensive to build
 Everything is built using a **Raspberry Pi** and several electronic components. You can easly find everything on Amazon/Ebay. A basic electronic knowledge is required, but all tutorials will be easy to understand with simple diagrams.
 
 ## Roadmap
