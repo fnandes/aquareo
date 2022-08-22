@@ -1,10 +1,17 @@
 package device
 
 import (
-	"fmt"
+	"errors"
+	"io/ioutil"
+	"log"
+	"strings"
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/stianeikeland/go-rpio"
+)
+
+var (
+	ErrTempSensorNotFound = errors.New("unable to find a temperature sensor")
 )
 
 type controller struct {
@@ -19,20 +26,26 @@ func NewRPiController(store aquareo.Store) *controller {
 	}
 }
 
-func (c *controller) Init(conf aquareo.Config) error {
+func (c *controller) Init(cfg aquareo.Config) error {
 	if err := rpio.Open(); err != nil {
-		return fmt.Errorf("controller: Failed to open the GPIO access: %w", err)
-	}
-
-	// register all sensors
-	for _, s := range conf.Sensors {
-		if s.Type == aquareo.DSL8B20 {
-			c.sensors[s.Id] = NewDsl8b20Sensor(s.Id, s.Name)
-		}
+		return err
 	}
 
 	// add the system temperature sensor
 	c.sensors[aquareo.SensorSysTemp] = NewSysTempSensor(aquareo.SensorSysTemp, "Controller Temperature")
+
+	// detect and install the temperature sensors
+	data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
+	if err != nil {
+		return ErrTempSensorNotFound
+	}
+
+	for _, sid := range strings.Split(string(data), "\n") {
+		if sid != "" {
+			log.Println("controller: installing sensor", sid)
+			c.sensors[sid] = NewDs18b20Sensor(sid, sid)
+		}
+	}
 
 	return nil
 }

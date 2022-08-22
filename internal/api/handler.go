@@ -56,10 +56,10 @@ type metricResponse struct {
 func (h *handler) ListMetrics(w http.ResponseWriter, req *http.Request) {
 	var arr []metricResponse
 
-	for _, s := range h.cfg.Sensors {
+	for _, s := range h.c.Sensors() {
 		arr = append(arr, metricResponse{
-			Id:   s.Id,
-			Name: s.Name,
+			Id:   s.Id(),
+			Name: s.Id(),
 		})
 	}
 	// add raspberry sensor

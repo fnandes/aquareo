@@ -1,15 +1,18 @@
 import * as React from 'react'
-import * as colors from 'tailwindcss/colors'
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 import * as moment from 'moment'
-import { Metric, MetricRecord } from '../types'
+import {Metric, MetricRecord} from '../types'
 import * as api from '../api'
+import Card from '@mui/material/Card'
+import {useTheme} from '@mui/material/styles'
+import {CardHeader} from '@mui/material'
 
 
 const EVERY_5_SECONDS = 5000
 
 export type MetricCardProps = Metric & {}
-export const MetricCard: React.FC<MetricCardProps> = ({ id, name }) => {
+export const MetricCard: React.FC<MetricCardProps> = ({id, name}) => {
+  const theme = useTheme()
   const [data, setData] = React.useState<MetricRecord[]>([])
 
   React.useEffect(() => {
@@ -21,21 +24,17 @@ export const MetricCard: React.FC<MetricCardProps> = ({ id, name }) => {
   }, [])
 
   return (
-    <div className='basis-1/2'>
-      <div className='bg-gray-800 shadow-lg rounded-lg m-4 hover:shadow-sm'>
-
-        <div className='px-4 pt-2 pb-4 font-semibold'>{name}</div>
-        <div className='relative overflow-hidden'>
-          <ResponsiveContainer height={300} width="99%">
-            <LineChart data={data.sort((a, b) => a.Timespan - b.Timespan)}>
-              <XAxis dataKey="Timespan" tickFormatter={val => moment.unix(val).format('hh:mm')} stroke={colors.indigo[500]} />
-              <YAxis domain={['auto', 'auto']} stroke={colors.indigo[400]} strokeWidth={0} padding={{}} />
-              <Tooltip />
-              <Line type="monotone" dataKey="Value" stroke={colors.purple[500]} strokeWidth={2} unit="C" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
+    <Card>
+      <CardHeader title={name}/>
+      <ResponsiveContainer height={300} width="99%">
+        <LineChart data={data.sort((a, b) => a.Timespan - b.Timespan)}>
+          <XAxis dataKey="Timespan" tickFormatter={val => moment.unix(val).format('hh:mm')}
+                 stroke={theme.palette.secondary.light}/>
+          <YAxis domain={['auto', 'auto']} stroke={theme.palette.secondary.light} strokeWidth={0} padding={{}}/>
+          <Tooltip/>
+          <Line type="monotone" dataKey="Value" stroke={theme.palette.primary.main} strokeWidth={3} unit="C"/>
+        </LineChart>
+      </ResponsiveContainer>
+    </Card>
   )
 }

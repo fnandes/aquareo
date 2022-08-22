@@ -56,7 +56,7 @@ func (s *store) ReadAll(bucket string, size int) ([]aquareo.MetricEntry, error) 
 		for k, v := cur.Last(); k != nil && i < size; k, v = cur.Prev() {
 			arr = append(arr, aquareo.MetricEntry{
 				Timespan: int64(binary.LittleEndian.Uint64(k)),
-				Value:    math.Float32frombits((binary.LittleEndian.Uint32(v))),
+				Value:    math.Float32frombits(binary.LittleEndian.Uint32(v)),
 			})
 			i += 1
 		}

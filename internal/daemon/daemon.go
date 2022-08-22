@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/pedrobfernandes/aquareo/internal/api"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
@@ -39,7 +40,9 @@ func (a *daemon) Start() error {
 	ctrl := device.NewRPiController(s)
 
 	if err := ctrl.Init(a.cfg); err != nil {
-		return fmt.Errorf("daemon: Failed to start controller: %w", err)
+		if !errors.Is(err, device.ErrTempSensorNotFound) {
+			return fmt.Errorf("daemon: Failed to start controller: %w", err)
+		}
 	}
 
 	if err := createBuckets(a.db, ctrl); err != nil {
