@@ -2,6 +2,7 @@
 
 **Aquareo** is an open source software and collection of tutorials that enables to you build your own aquarium controller with a Raspberry PI and several cheap electronic components.
 
+![dashboard](docs/dashboard.png)
 
 ### 🩺 Monitoring
 Check your aquarium temperature, Ph and salinity in a single dashboard.
@@ -36,4 +37,3 @@ Everything is built using a **Raspberry Pi** and several electronic components. 
 - [ ] Temperature controller
 - [ ] Dosing controller
 - [ ] 3D-printed water test automation station
-

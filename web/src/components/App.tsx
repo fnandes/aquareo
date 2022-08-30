@@ -1,38 +1,15 @@
-import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import {deepPurple, indigo} from '@mui/material/colors'
-import Container from '@mui/material/Container'
-import CssBaseline from '@mui/material/CssBaseline'
-import {createTheme, ThemeProvider} from '@mui/material/styles'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import {Dashboard} from './Dasboard'
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: deepPurple,
-    secondary: indigo
-  }
-})
+import { Dashboard } from '../pages/Dasboard'
 
 export const App: React.FC = () => (
-  <ThemeProvider theme={theme}>
-    <div>
-      <CssBaseline/>
-      <AppBar position="static" color="primary" enableColorOnDark>
-        <Toolbar>
-          <Typography variant="h6" component="div">
-            Test
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box sx={{my: 4}}>
-        <Container maxWidth="xl">
-          <Dashboard/>
-        </Container>
-      </Box>
-    </div>
-  </ThemeProvider>
+  <div className='font-sans bg-slate-200 flex flex-col w-screen h-screen overflow-hidden'>
+    <nav className='bg-purple-800 text-white p-4 shadow-lg'>
+      <h1 className='text-2xl font-semibold'>Aquareo</h1>
+    </nav>
+    <main className='flex-1 overflow-auto'>
+      <div className='m-4'>
+        <Dashboard />
+      </div>
+    </main>
+  </div>
 )

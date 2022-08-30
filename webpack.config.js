@@ -21,6 +21,10 @@ module.exports = {
         exclude: /node_modules/,
         use: 'babel-loader'
       }, {
+        test: /.css$/i,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader', 'postcss-loader']
+      }, {
         test: /\.(ttf|eot|woff2?)$/,
         type: 'asset/resource',
       }, {

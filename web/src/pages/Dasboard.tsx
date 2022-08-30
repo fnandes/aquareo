@@ -1,8 +1,7 @@
 import * as React from 'react'
-import {Metric} from '../types'
+import { Metric } from '../types'
 import * as api from '../api'
-import {MetricCard} from './MetricCard'
-import Grid from '@mui/material/Grid'
+import { MetricCard } from '../components/MetricCard'
 
 export type DashboardProps = {}
 
@@ -14,12 +13,14 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   }, [])
 
   return metrics ? (
-    <Grid container spacing={2}>
+    <div className='flex flex-wrap'>
       {metrics.map(metric => (
-        <Grid key={metric.id} item md={6} sm={4} xs={12}>
-          <MetricCard key={metric.id} id={metric.id} name={metric.name}/>
-        </Grid>
+        <div key={metric.id} className='basis-1/2 mb-6'>
+          <div className='mr-4'>
+            <MetricCard key={metric.id} id={metric.id} name={metric.name} />
+          </div>
+        </div>
       ))}
-    </Grid>
+    </div>
   ) : <span>Nothing to see here ... =/</span>
 }
