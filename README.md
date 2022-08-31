@@ -1,4 +1,5 @@
 [![build](https://github.com/fnandes/aquareo/actions/workflows/go.yml/badge.svg)](https://github.com/fnandes/aquareo/actions/workflows/go.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pedrobfernandes/aquareo)](https://goreportcard.com/report/github.com/pedrobfernandes/aquareo)
 
 # Aquareo
 
