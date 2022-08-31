@@ -1,3 +1,5 @@
+[![build](https://github.com/fnandes/aquareo/actions/workflows/go.yml/badge.svg)](https://github.com/fnandes/aquareo/actions/workflows/go.yml)
+
 # Aquareo
 
 **Aquareo** is an open source software and collection of tutorials that enables to you build your own aquarium controller with a Raspberry PI and several cheap electronic components.
