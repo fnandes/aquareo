@@ -1,4 +1,5 @@
-import { Metric, MetricRecord } from './types'
+import { demoData } from './tests/dummy-data'
+import { ControllableGear, Metric, MetricRecord } from './types'
 
 const baseUrl = 'http://raspberrypi.local:8082'
 
@@ -8,4 +9,8 @@ export const listMetrics = async (): Promise<Metric[]> => {
 
 export const fetchMetricData = async (metricId: string): Promise<MetricRecord[]> => {
   return await fetch(`${baseUrl}/metrics/${metricId}`).then(res => res.json())
+}
+
+export const fetchGears = async (): Promise<ControllableGear[]> => {
+  return Promise.resolve(demoData.gears)
 }

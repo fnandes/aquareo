@@ -1,5 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -12,7 +13,8 @@ module.exports = {
   devtool: isDev ? 'source-map' : undefined,
   output: {
     publicPath: '/ui',
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    clean: true
   },
   module: {
     rules: [
@@ -23,7 +25,7 @@ module.exports = {
       }, {
         test: /.css$/i,
         exclude: /node_modules/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
       }, {
         test: /\.(ttf|eot|woff2?)$/,
         type: 'asset/resource',
@@ -37,6 +39,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       inject: 'body',
       template: path.resolve(__dirname, 'web/index.html')

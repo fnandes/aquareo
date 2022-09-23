@@ -7,3 +7,10 @@ export type MetricRecord = {
   Timespan: number
   Value: number
 }
+
+export type ControllableGear = {
+  id: string
+  name: string
+  lastUpdate: number
+  isOn: boolean
+}
