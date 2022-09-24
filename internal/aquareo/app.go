@@ -30,6 +30,7 @@ type Store interface {
 	Store(bucket string, entry MetricEntry) error
 	ReadAll(bucket string, size int) ([]MetricEntry, error)
 }
+
 type MetricEntry struct {
 	Timespan int64
 	Value    float32

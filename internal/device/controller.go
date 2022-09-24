@@ -2,11 +2,11 @@ package device
 
 import (
 	"errors"
-	"io/ioutil"
 	"log"
 	"strings"
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/spf13/afero"
 	"github.com/stianeikeland/go-rpio"
 )
 
@@ -15,12 +15,14 @@ var (
 )
 
 type controller struct {
+	fs      afero.Fs
 	store   aquareo.Store
 	sensors map[string]aquareo.Sensor
 }
 
-func NewRPiController(store aquareo.Store) *controller {
+func NewRPiController(fs afero.Fs, store aquareo.Store) *controller {
 	return &controller{
+		fs:      fs,
 		store:   store,
 		sensors: make(map[string]aquareo.Sensor),
 	}
@@ -31,11 +33,8 @@ func (c *controller) Init(cfg aquareo.Config) error {
 		return err
 	}
 
-	// add the system temperature sensor
-	c.sensors[aquareo.SensorSysTemp] = NewSysTempSensor(aquareo.SensorSysTemp, "Controller Temperature")
-
 	// detect and install the temperature sensors
-	data, err := ioutil.ReadFile("/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
+	data, err := afero.ReadFile(c.fs, "/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves")
 	if err != nil {
 		return ErrTempSensorNotFound
 	}
@@ -43,7 +42,7 @@ func (c *controller) Init(cfg aquareo.Config) error {
 	for _, sid := range strings.Split(string(data), "\n") {
 		if sid != "" {
 			log.Println("controller: installing sensor", sid)
-			c.sensors[sid] = NewDs18b20Sensor(sid, sid)
+			c.sensors[sid] = NewDs18b20Sensor(c.fs, sid)
 		}
 	}
 

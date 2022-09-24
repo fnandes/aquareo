@@ -2,25 +2,19 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"github.com/pedrobfernandes/aquareo/internal/daemon"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/pedrobfernandes/aquareo/internal/daemon"
+	"github.com/spf13/afero"
+
 	"go.etcd.io/bbolt"
 )
 
 func main() {
-	config, err := loadConfigFile("config.json")
-	if err != nil {
-		log.Fatal("Failed to load the config.json file: ", err)
-	}
-
 	db, err := bbolt.Open("aquareo.db", 0600, nil)
 	if err != nil {
 		log.Fatal("Failed to get a database connection: ", err)
@@ -31,7 +25,8 @@ func main() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	app := daemon.NewDaemon(config, db)
+	fs := afero.NewOsFs()
+	app := daemon.NewDaemon(fs, db)
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
 	}
@@ -47,19 +42,4 @@ func main() {
 	}()
 
 	<-done
-}
-
-func loadConfigFile(filename string) (aquareo.Config, error) {
-	var config aquareo.Config
-
-	content, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return config, err
-	}
-
-	if err := json.Unmarshal(content, &config); err != nil {
-		return config, err
-	}
-
-	return config, nil
 }

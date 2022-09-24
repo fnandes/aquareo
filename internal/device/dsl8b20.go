@@ -2,9 +2,10 @@ package device
 
 import (
 	"errors"
-	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/afero"
 )
 
 var (
@@ -12,15 +13,15 @@ var (
 )
 
 type ds18b20 struct {
-	id       string
-	serialNr string
-	currVal  float32
+	fs      afero.Fs
+	id      string
+	currVal float32
 }
 
-func NewDs18b20Sensor(id string, serialNr string) *ds18b20 {
+func NewDs18b20Sensor(fs afero.Fs, id string) *ds18b20 {
 	return &ds18b20{
-		id:       id,
-		serialNr: serialNr,
+		fs: fs,
+		id: id,
 	}
 }
 
@@ -33,7 +34,7 @@ func (s *ds18b20) CurrentValue() float32 {
 }
 
 func (s *ds18b20) Refresh() error {
-	data, err := ioutil.ReadFile("/sys/bus/w1/devices/" + s.id + "/w1_slave")
+	data, err := afero.ReadFile(s.fs, "/sys/bus/w1/devices/"+s.id+"/w1_slave")
 	if err != nil {
 		return ErrReadSensor
 	}

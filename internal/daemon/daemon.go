@@ -2,27 +2,30 @@ package daemon
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/pedrobfernandes/aquareo/internal/api"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/pedrobfernandes/aquareo/internal/device"
 	"github.com/pedrobfernandes/aquareo/internal/sensor"
 	"github.com/pedrobfernandes/aquareo/internal/store"
+	"github.com/spf13/afero"
 	"go.etcd.io/bbolt"
 )
 
 type daemon struct {
-	cfg aquareo.Config
-	db  *bbolt.DB
-	ws  aquareo.WebServer
-	sc  aquareo.SensorCommander
+	fs afero.Fs
+	db *bbolt.DB
+	ws aquareo.WebServer
+	sc aquareo.SensorCommander
 }
 
-func NewDaemon(cfg aquareo.Config, db *bbolt.DB) *daemon {
+func NewDaemon(fs afero.Fs, db *bbolt.DB) *daemon {
 	return &daemon{
-		cfg: cfg,
-		db:  db,
+		fs: fs,
+		db: db,
 	}
 }
 
@@ -37,9 +40,14 @@ func (a *daemon) Stop(ctx context.Context) {
 
 func (a *daemon) Start() error {
 	s := store.NewBoltDbStore(a.db)
-	ctrl := device.NewRPiController(s)
+	ctrl := device.NewRPiController(a.fs, s)
 
-	if err := ctrl.Init(a.cfg); err != nil {
+	cfg, err := a.loadConfigFile("config.json")
+	if err != nil {
+		return fmt.Errorf("daemon: Failed to load config file")
+	}
+
+	if err := ctrl.Init(cfg); err != nil {
 		if !errors.Is(err, device.ErrTempSensorNotFound) {
 			return fmt.Errorf("daemon: Failed to start controller: %w", err)
 		}
@@ -49,8 +57,8 @@ func (a *daemon) Start() error {
 		return fmt.Errorf("daemon: Failed to create buckets: %w", err)
 	}
 
-	a.ws = api.NewServer(a.cfg, ctrl)
-	a.sc = sensor.NewCommander(a.cfg, ctrl)
+	a.ws = api.NewServer(cfg, ctrl)
+	a.sc = sensor.NewCommander(cfg, ctrl)
 
 	go func() {
 		a.ws.Start(":8082")
@@ -71,4 +79,19 @@ func createBuckets(db *bbolt.DB, c aquareo.Controller) error {
 		}
 		return nil
 	})
+}
+
+func (a *daemon) loadConfigFile(filename string) (aquareo.Config, error) {
+	var config aquareo.Config
+
+	content, err := afero.ReadFile(a.fs, filename)
+	if err != nil {
+		return config, err
+	}
+
+	if err := json.Unmarshal(content, &config); err != nil {
+		return config, err
+	}
+
+	return config, nil
 }
