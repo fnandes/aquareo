@@ -40,7 +40,9 @@ func (a *daemon) Stop(ctx context.Context) {
 
 func (a *daemon) Start() error {
 	s := store.NewBoltDbStore(a.db)
-	ctrl := device.NewRPiController(a.fs, s)
+	gpio := device.NewRPIODriver()
+
+	ctrl := device.NewRPiController(a.fs, gpio, s)
 
 	cfg, err := a.loadConfigFile("config.json")
 	if err != nil {

@@ -7,7 +7,6 @@ import (
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/spf13/afero"
-	"github.com/stianeikeland/go-rpio"
 )
 
 var (
@@ -15,13 +14,15 @@ var (
 )
 
 type controller struct {
+	gpio    aquareo.GPIODriver
 	fs      afero.Fs
 	store   aquareo.Store
 	sensors map[string]aquareo.Sensor
 }
 
-func NewRPiController(fs afero.Fs, store aquareo.Store) *controller {
+func NewRPiController(fs afero.Fs, gpio aquareo.GPIODriver, store aquareo.Store) *controller {
 	return &controller{
+		gpio:    gpio,
 		fs:      fs,
 		store:   store,
 		sensors: make(map[string]aquareo.Sensor),
@@ -29,7 +30,7 @@ func NewRPiController(fs afero.Fs, store aquareo.Store) *controller {
 }
 
 func (c *controller) Init(cfg aquareo.Config) error {
-	if err := rpio.Open(); err != nil {
+	if err := c.gpio.Open(); err != nil {
 		return err
 	}
 
@@ -50,7 +51,7 @@ func (c *controller) Init(cfg aquareo.Config) error {
 }
 
 func (c *controller) Close() error {
-	return rpio.Close()
+	return c.gpio.Close()
 }
 
 func (c *controller) Store() aquareo.Store {
