@@ -1,4 +1,4 @@
-package device
+package sensor
 
 import (
 	"errors"
@@ -13,9 +13,8 @@ var (
 )
 
 type ds18b20 struct {
-	fs      afero.Fs
-	id      string
-	currVal float32
+	fs afero.Fs
+	id string
 }
 
 func NewDs18b20Sensor(fs afero.Fs, id string) *ds18b20 {
@@ -25,37 +24,27 @@ func NewDs18b20Sensor(fs afero.Fs, id string) *ds18b20 {
 	}
 }
 
-func (s *ds18b20) Id() string {
-	return s.id
-}
-
-func (s *ds18b20) CurrentValue() float32 {
-	return s.currVal
-}
-
-func (s *ds18b20) Refresh() error {
+func (s *ds18b20) GetValue() (float32, error) {
 	data, err := afero.ReadFile(s.fs, "/sys/bus/w1/devices/"+s.id+"/w1_slave")
 	if err != nil {
-		return ErrReadSensor
+		return -1, ErrReadSensor
 	}
 
 	raw := string(data)
 
 	if !strings.Contains(raw, " YES") {
-		return ErrReadSensor
+		return -1, ErrReadSensor
 	}
 
 	i := strings.LastIndex(raw, "t=")
 	if i == -1 {
-		return ErrReadSensor
+		return -1, ErrReadSensor
 	}
 
 	c, err := strconv.ParseFloat(raw[i+2:len(raw)-1], 64)
 	if err != nil {
-		return ErrReadSensor
+		return -1, ErrReadSensor
 	}
 
-	s.currVal = float32(c / 1000.0)
-
-	return nil
+	return float32(c / 1000.0), nil
 }

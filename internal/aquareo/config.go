@@ -1,8 +1,6 @@
 package aquareo
 
 const (
-	SensorTemp1    = "temperature_1"
-	SensorTemp2    = "temperature_2"
 	SensorPh       = "ph"
 	SensorSalinity = "salinity"
 	SensorSysTemp  = "sys_temp"
@@ -11,13 +9,20 @@ const (
 )
 
 type Config struct {
-	Name string `json:"name"`
-
-	Sensors []SensorConfig `json:"sensors"`
+	Name          string                  `json:"name"`
+	Sensors       map[string]SensorConfig `json:"sensors"`
+	CustomMetrics []CustomMetric          `json:"customMetrics"`
 }
 
 type SensorConfig struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Id          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	MetricUnit  string `json:"metricUnit"`
+	Type        string `json:"type"`
+}
+
+type CustomMetric struct {
+	Id          string `json:"id"`
+	DisplayName string `json:"displayName"`
+	MetricUnit  string `json:"metricUnit"`
 }

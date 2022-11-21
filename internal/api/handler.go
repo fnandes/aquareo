@@ -10,8 +10,7 @@ import (
 )
 
 type handler struct {
-	c   aquareo.Controller
-	cfg aquareo.Config
+	ctrl aquareo.Controller
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -26,7 +25,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
 		http.ServeFile(w, res, "ui/index.html")
 	})
-	r.HandleFunc("/metrics", h.ListMetrics).Methods("GET")
+	r.HandleFunc("/config", h.GetConfig).Methods("GET")
 	r.HandleFunc("/metrics/{key}", h.GetMetric).Methods("GET")
 
 	r.ServeHTTP(w, req)
@@ -35,9 +34,9 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 
-	items, err := h.c.Store().ReadAll(vars["key"], 40)
+	items, err := h.ctrl.Store().ReadAll(vars["key"], 40)
 	if err != nil {
-		log.Println("handler.GetMetric: Failed to get metric data: ", err.Error())
+		log.Println("handler.GetMetric: failed to get metric data: ", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -48,27 +47,15 @@ func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
-type metricResponse struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-func (h *handler) ListMetrics(w http.ResponseWriter, req *http.Request) {
-	var arr []metricResponse
-
-	for _, s := range h.c.Sensors() {
-		arr = append(arr, metricResponse{
-			Id:   s.Id(),
-			Name: s.Id(),
-		})
+func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {
+	var cfg, err = h.ctrl.Config().Get()
+	if err != nil {
+		log.Println("handler.GetMetric: failed to get config: ", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-	// add raspberry sensor
-	arr = append(arr, metricResponse{
-		Id:   aquareo.SensorSysTemp,
-		Name: "Controller Temperature",
-	})
 
-	b, _ := json.Marshal(arr)
+	b, _ := json.Marshal(cfg)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)

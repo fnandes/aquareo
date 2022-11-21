@@ -2,8 +2,6 @@ package daemon
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/pedrobfernandes/aquareo/internal/api"
@@ -19,7 +17,7 @@ type daemon struct {
 	fs afero.Fs
 	db *bbolt.DB
 	ws aquareo.WebServer
-	sc aquareo.SensorCommander
+	dc aquareo.DataCollector
 }
 
 func NewDaemon(fs afero.Fs, db *bbolt.DB) *daemon {
@@ -33,67 +31,46 @@ func (a *daemon) Stop(ctx context.Context) {
 	if a.ws != nil {
 		a.ws.Stop(ctx)
 	}
-	if a.sc != nil {
-		a.sc.Stop(ctx)
+	if a.dc != nil {
+		a.dc.Stop(ctx)
 	}
 }
 
 func (a *daemon) Start() error {
 	s := store.NewBoltDbStore(a.db)
 	gpio := device.NewRPIODriver()
+	cfg := store.NewFileConfigurer("config.json", a.fs)
 
-	ctrl := device.NewRPiController(a.fs, gpio, s)
-
-	cfg, err := a.loadConfigFile("config.json")
-	if err != nil {
-		return fmt.Errorf("daemon: Failed to load config file")
-	}
-
-	if err := ctrl.Init(cfg); err != nil {
-		if !errors.Is(err, device.ErrTempSensorNotFound) {
-			return fmt.Errorf("daemon: Failed to start controller: %w", err)
-		}
-	}
+	ctrl := device.NewRPiController(a.fs, gpio, cfg, s)
 
 	if err := createBuckets(a.db, ctrl); err != nil {
 		return fmt.Errorf("daemon: Failed to create buckets: %w", err)
 	}
 
-	a.ws = api.NewServer(cfg, ctrl)
-	a.sc = sensor.NewCommander(cfg, ctrl)
+	a.ws = api.NewServer(ctrl)
+	a.dc = sensor.NewDataCollector(ctrl, a.fs)
 
 	go func() {
 		a.ws.Start(":8082")
 	}()
 
 	go func() {
-		a.sc.Start()
+		a.dc.Start()
 	}()
 	return nil
 }
 
 func createBuckets(db *bbolt.DB, c aquareo.Controller) error {
+	cfg, err := c.Config().Get()
+	if err != nil {
+		return err
+	}
 	return db.Update(func(tx *bbolt.Tx) error {
-		for _, s := range c.Sensors() {
-			if _, err := tx.CreateBucketIfNotExists([]byte(s.Id())); err != nil {
+		for sid := range cfg.Sensors {
+			if _, err := tx.CreateBucketIfNotExists([]byte(sid)); err != nil {
 				return err
 			}
 		}
 		return nil
 	})
-}
-
-func (a *daemon) loadConfigFile(filename string) (aquareo.Config, error) {
-	var config aquareo.Config
-
-	content, err := afero.ReadFile(a.fs, filename)
-	if err != nil {
-		return config, err
-	}
-
-	if err := json.Unmarshal(content, &config); err != nil {
-		return config, err
-	}
-
-	return config, nil
 }

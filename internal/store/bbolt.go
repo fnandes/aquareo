@@ -23,23 +23,23 @@ func (s *store) CreateBucketIfNotExists(bucket string) error {
 	return s.db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(bucket))
 		if err != nil {
-			return fmt.Errorf("bbolt: Failed to created bucket: %w", err)
+			return fmt.Errorf("bbolt: failed to created bucket: %w", err)
 		}
 		return nil
 	})
 }
 
 func (s *store) Store(bucket string, entry aquareo.MetricEntry) error {
-	log.Printf("bbolt: Saving %s: [%v, %v]", bucket, entry.Timespan, entry.Value)
+	log.Printf("bbolt: saving %s: [%v, %v]", bucket, entry.Timespan, entry.Value)
 	return s.db.Update(func(tx *bbolt.Tx) error {
 		var kbuf, vbuf bytes.Buffer
 
 		if err := binary.Write(&kbuf, binary.BigEndian, entry.Timespan); err != nil {
-			return fmt.Errorf("bbolt: Failed to get bytes from key: %w", err)
+			return fmt.Errorf("bbolt: failed to get bytes from key: %w", err)
 		}
 
 		if err := binary.Write(&vbuf, binary.BigEndian, entry.Value); err != nil {
-			return fmt.Errorf("bbolt: Failed to get bytes from value: %w", err)
+			return fmt.Errorf("bbolt: failed to get bytes from value: %w", err)
 		}
 
 		return tx.Bucket([]byte(bucket)).Put(kbuf.Bytes(), vbuf.Bytes())

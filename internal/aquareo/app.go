@@ -4,7 +4,12 @@ import (
 	"context"
 )
 
-//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Sensor,SensorCommander,Store,GPIODriver
+//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Configurer,Sensor,DataCollector,Store,GPIODriver
+
+type Configurer interface {
+	Get() (Config, error)
+	Save(cfg Config) error
+}
 
 type WebServer interface {
 	Start(addr string)
@@ -13,8 +18,7 @@ type WebServer interface {
 
 type Controller interface {
 	Store() Store
-	Sensors() []Sensor
-	Sensor(sensorId string) Sensor
+	Config() Configurer
 }
 
 type GPIODriver interface {
@@ -23,12 +27,10 @@ type GPIODriver interface {
 }
 
 type Sensor interface {
-	Id() string
-	CurrentValue() float32
-	Refresh() error
+	GetValue() (float32, error)
 }
 
-type SensorCommander interface {
+type DataCollector interface {
 	Start()
 	Stop(ctx context.Context)
 }

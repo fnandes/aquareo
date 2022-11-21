@@ -10,21 +10,19 @@ import (
 )
 
 type Server struct {
-	c    aquareo.Controller
-	cfg  aquareo.Config
+	ctrl aquareo.Controller
 	http *http.Server
 }
 
-func NewServer(config aquareo.Config, c aquareo.Controller) *Server {
-	return &Server{c: c, cfg: config}
+func NewServer(ctrl aquareo.Controller) *Server {
+	return &Server{ctrl: ctrl}
 }
 
 func (s *Server) Start(addr string) {
 	log.Println("api: Server started")
 
 	r := &handler{
-		c:   s.c,
-		cfg: s.cfg,
+		ctrl: s.ctrl,
 	}
 
 	s.http = &http.Server{

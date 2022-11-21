@@ -12,6 +12,58 @@ import (
 	aquareo "github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
+// MockConfigurer is a mock of Configurer interface.
+type MockConfigurer struct {
+	ctrl     *gomock.Controller
+	recorder *MockConfigurerMockRecorder
+}
+
+// MockConfigurerMockRecorder is the mock recorder for MockConfigurer.
+type MockConfigurerMockRecorder struct {
+	mock *MockConfigurer
+}
+
+// NewMockConfigurer creates a new mock instance.
+func NewMockConfigurer(ctrl *gomock.Controller) *MockConfigurer {
+	mock := &MockConfigurer{ctrl: ctrl}
+	mock.recorder = &MockConfigurerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockConfigurer) EXPECT() *MockConfigurerMockRecorder {
+	return m.recorder
+}
+
+// Get mocks base method.
+func (m *MockConfigurer) Get() (aquareo.Config, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Get")
+	ret0, _ := ret[0].(aquareo.Config)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Get indicates an expected call of Get.
+func (mr *MockConfigurerMockRecorder) Get() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConfigurer)(nil).Get))
+}
+
+// Save mocks base method.
+func (m *MockConfigurer) Save(cfg aquareo.Config) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Save", cfg)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Save indicates an expected call of Save.
+func (mr *MockConfigurerMockRecorder) Save(cfg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockConfigurer)(nil).Save), cfg)
+}
+
 // MockWebServer is a mock of WebServer interface.
 type MockWebServer struct {
 	ctrl     *gomock.Controller
@@ -82,32 +134,18 @@ func (m *MockController) EXPECT() *MockControllerMockRecorder {
 	return m.recorder
 }
 
-// Sensor mocks base method.
-func (m *MockController) Sensor(sensorId string) aquareo.Sensor {
+// Config mocks base method.
+func (m *MockController) Config() aquareo.Configurer {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Sensor", sensorId)
-	ret0, _ := ret[0].(aquareo.Sensor)
+	ret := m.ctrl.Call(m, "Config")
+	ret0, _ := ret[0].(aquareo.Configurer)
 	return ret0
 }
 
-// Sensor indicates an expected call of Sensor.
-func (mr *MockControllerMockRecorder) Sensor(sensorId interface{}) *gomock.Call {
+// Config indicates an expected call of Config.
+func (mr *MockControllerMockRecorder) Config() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sensor", reflect.TypeOf((*MockController)(nil).Sensor), sensorId)
-}
-
-// Sensors mocks base method.
-func (m *MockController) Sensors() []aquareo.Sensor {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Sensors")
-	ret0, _ := ret[0].([]aquareo.Sensor)
-	return ret0
-}
-
-// Sensors indicates an expected call of Sensors.
-func (mr *MockControllerMockRecorder) Sensors() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sensors", reflect.TypeOf((*MockController)(nil).Sensors))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Config", reflect.TypeOf((*MockController)(nil).Config))
 }
 
 // Store mocks base method.
@@ -198,93 +236,66 @@ func (m *MockSensor) EXPECT() *MockSensorMockRecorder {
 	return m.recorder
 }
 
-// CurrentValue mocks base method.
-func (m *MockSensor) CurrentValue() float32 {
+// GetValue mocks base method.
+func (m *MockSensor) GetValue() (float32, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CurrentValue")
+	ret := m.ctrl.Call(m, "GetValue")
 	ret0, _ := ret[0].(float32)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// CurrentValue indicates an expected call of CurrentValue.
-func (mr *MockSensorMockRecorder) CurrentValue() *gomock.Call {
+// GetValue indicates an expected call of GetValue.
+func (mr *MockSensorMockRecorder) GetValue() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CurrentValue", reflect.TypeOf((*MockSensor)(nil).CurrentValue))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetValue", reflect.TypeOf((*MockSensor)(nil).GetValue))
 }
 
-// Id mocks base method.
-func (m *MockSensor) Id() string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Id")
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// Id indicates an expected call of Id.
-func (mr *MockSensorMockRecorder) Id() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Id", reflect.TypeOf((*MockSensor)(nil).Id))
-}
-
-// Refresh mocks base method.
-func (m *MockSensor) Refresh() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Refresh")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Refresh indicates an expected call of Refresh.
-func (mr *MockSensorMockRecorder) Refresh() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Refresh", reflect.TypeOf((*MockSensor)(nil).Refresh))
-}
-
-// MockSensorCommander is a mock of SensorCommander interface.
-type MockSensorCommander struct {
+// MockDataCollector is a mock of DataCollector interface.
+type MockDataCollector struct {
 	ctrl     *gomock.Controller
-	recorder *MockSensorCommanderMockRecorder
+	recorder *MockDataCollectorMockRecorder
 }
 
-// MockSensorCommanderMockRecorder is the mock recorder for MockSensorCommander.
-type MockSensorCommanderMockRecorder struct {
-	mock *MockSensorCommander
+// MockDataCollectorMockRecorder is the mock recorder for MockDataCollector.
+type MockDataCollectorMockRecorder struct {
+	mock *MockDataCollector
 }
 
-// NewMockSensorCommander creates a new mock instance.
-func NewMockSensorCommander(ctrl *gomock.Controller) *MockSensorCommander {
-	mock := &MockSensorCommander{ctrl: ctrl}
-	mock.recorder = &MockSensorCommanderMockRecorder{mock}
+// NewMockDataCollector creates a new mock instance.
+func NewMockDataCollector(ctrl *gomock.Controller) *MockDataCollector {
+	mock := &MockDataCollector{ctrl: ctrl}
+	mock.recorder = &MockDataCollectorMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockSensorCommander) EXPECT() *MockSensorCommanderMockRecorder {
+func (m *MockDataCollector) EXPECT() *MockDataCollectorMockRecorder {
 	return m.recorder
 }
 
 // Start mocks base method.
-func (m *MockSensorCommander) Start() {
+func (m *MockDataCollector) Start() {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Start")
 }
 
 // Start indicates an expected call of Start.
-func (mr *MockSensorCommanderMockRecorder) Start() *gomock.Call {
+func (mr *MockDataCollectorMockRecorder) Start() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockSensorCommander)(nil).Start))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockDataCollector)(nil).Start))
 }
 
 // Stop mocks base method.
-func (m *MockSensorCommander) Stop(ctx context.Context) {
+func (m *MockDataCollector) Stop(ctx context.Context) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Stop", ctx)
 }
 
 // Stop indicates an expected call of Stop.
-func (mr *MockSensorCommanderMockRecorder) Stop(ctx interface{}) *gomock.Call {
+func (mr *MockDataCollectorMockRecorder) Stop(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockSensorCommander)(nil).Stop), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockDataCollector)(nil).Stop), ctx)
 }
 
 // MockStore is a mock of Store interface.
