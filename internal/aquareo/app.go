@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Configurer,Sensor,DataCollector,Store,GPIODriver
+//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Configurer,Storage,MetricStore,Subsystem,GPIODriver
 
 type Configurer interface {
 	Get() (Config, error)
@@ -17,7 +17,11 @@ type WebServer interface {
 }
 
 type Controller interface {
-	Store() Store
+	Install(s Subsystem) error
+	Start() error
+	Stop(ctx context.Context)
+
+	Storage() Storage
 	Config() Configurer
 }
 
@@ -26,18 +30,20 @@ type GPIODriver interface {
 	Close() error
 }
 
-type Sensor interface {
-	GetValue() (float32, error)
-}
-
-type DataCollector interface {
+type Subsystem interface {
+	Install(ctrl Controller) error
 	Start()
 	Stop(ctx context.Context)
 }
 
-type Store interface {
-	Store(bucket string, entry MetricEntry) error
-	ReadAll(bucket string, size int) ([]MetricEntry, error)
+type Storage interface {
+	MetricStore(bucket string) MetricStore
+	CreateBucket(bucket string) error
+}
+
+type MetricStore interface {
+	Put(timespan int64, value float32) error
+	List(size int) ([]MetricEntry, error)
 }
 
 type MetricEntry struct {

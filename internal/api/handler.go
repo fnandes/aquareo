@@ -26,7 +26,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		http.ServeFile(w, res, "ui/index.html")
 	})
 	r.HandleFunc("/config", h.GetConfig).Methods("GET")
-	r.HandleFunc("/metrics/{key}", h.GetMetric).Methods("GET")
+	r.HandleFunc("/metrics/{bucket}", h.GetMetric).Methods("GET")
 
 	r.ServeHTTP(w, req)
 }
@@ -34,9 +34,9 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 
-	items, err := h.ctrl.Store().ReadAll(vars["key"], 40)
+	items, err := h.ctrl.Storage().MetricStore(vars["bucket"]).List(40)
 	if err != nil {
-		log.Println("handler.GetMetric: failed to get metric data: ", err.Error())
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -50,7 +50,7 @@ func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {
 	var cfg, err = h.ctrl.Config().Get()
 	if err != nil {
-		log.Println("handler.GetMetric: failed to get config: ", err.Error())
+		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

@@ -1,42 +1,39 @@
 package device
 
 import (
-	"errors"
+	"context"
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/spf13/afero"
 )
 
-var (
-	ErrTempSensorNotFound = errors.New("unable to find a temperature sensor")
-)
-
 type controller struct {
 	gpio       aquareo.GPIODriver
 	fs         afero.Fs
-	store      aquareo.Store
-	configurer aquareo.Configurer
+	storage    aquareo.Storage
+	cfgMgr     aquareo.Configurer
+	subSystems []aquareo.Subsystem
 }
 
 func NewRPiController(
 	fs afero.Fs,
 	gpio aquareo.GPIODriver,
-	configurer aquareo.Configurer,
-	store aquareo.Store,
+	storage aquareo.Storage,
+	cfgMgr aquareo.Configurer,
 ) *controller {
 	return &controller{
-		gpio:       gpio,
-		fs:         fs,
-		store:      store,
-		configurer: configurer,
+		gpio:    gpio,
+		fs:      fs,
+		storage: storage,
+		cfgMgr:  cfgMgr,
 	}
 }
 
-func (c *controller) Config() aquareo.Configurer {
-	return c.configurer
+func (c *controller) Install(s aquareo.Subsystem) error {
+	return s.Install(c)
 }
 
-func (c *controller) Init() error {
+func (c *controller) Start() error {
 	if err := c.gpio.Open(); err != nil {
 		return err
 	}
@@ -44,10 +41,14 @@ func (c *controller) Init() error {
 	return nil
 }
 
-func (c *controller) Close() error {
-	return c.gpio.Close()
+func (c *controller) Stop(ctx context.Context) {
+	c.gpio.Close()
 }
 
-func (c *controller) Store() aquareo.Store {
-	return c.store
+func (c *controller) Storage() aquareo.Storage {
+	return c.storage
+}
+
+func (c *controller) Config() aquareo.Configurer {
+	return c.cfgMgr
 }

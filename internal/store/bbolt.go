@@ -4,22 +4,25 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"log"
 	"math"
 
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"go.etcd.io/bbolt"
 )
 
-type store struct {
+const (
+	TemperatureBucket = "temperature"
+)
+
+type storage struct {
 	db *bbolt.DB
 }
 
-func NewBoltDbStore(db *bbolt.DB) *store {
-	return &store{db: db}
+func NewBoldDbStorage(db *bbolt.DB) *storage {
+	return &storage{db: db}
 }
 
-func (s *store) CreateBucketIfNotExists(bucket string) error {
+func (s *storage) CreateBucket(bucket string) error {
 	return s.db.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(bucket))
 		if err != nil {
@@ -29,28 +32,23 @@ func (s *store) CreateBucketIfNotExists(bucket string) error {
 	})
 }
 
-func (s *store) Store(bucket string, entry aquareo.MetricEntry) error {
-	log.Printf("bbolt: saving %s: [%v, %v]", bucket, entry.Timespan, entry.Value)
-	return s.db.Update(func(tx *bbolt.Tx) error {
-		var kbuf, vbuf bytes.Buffer
-
-		if err := binary.Write(&kbuf, binary.BigEndian, entry.Timespan); err != nil {
-			return fmt.Errorf("bbolt: failed to get bytes from key: %w", err)
-		}
-
-		if err := binary.Write(&vbuf, binary.BigEndian, entry.Value); err != nil {
-			return fmt.Errorf("bbolt: failed to get bytes from value: %w", err)
-		}
-
-		return tx.Bucket([]byte(bucket)).Put(kbuf.Bytes(), vbuf.Bytes())
-	})
+type objectStore struct {
+	bucket string
+	db     *bbolt.DB
 }
 
-func (s *store) ReadAll(bucket string, size int) ([]aquareo.MetricEntry, error) {
+func (s *storage) MetricStore(bucket string) aquareo.MetricStore {
+	return &objectStore{
+		db:     s.db,
+		bucket: bucket,
+	}
+}
+
+func (o *objectStore) List(size int) ([]aquareo.MetricEntry, error) {
 	var arr []aquareo.MetricEntry
 
-	err := s.db.View(func(tx *bbolt.Tx) error {
-		cur := tx.Bucket([]byte(bucket)).Cursor()
+	err := o.db.View(func(tx *bbolt.Tx) error {
+		cur := tx.Bucket([]byte(o.bucket)).Cursor()
 		i := 0
 
 		for k, v := cur.Last(); k != nil && i < size; k, v = cur.Prev() {
@@ -65,4 +63,20 @@ func (s *store) ReadAll(bucket string, size int) ([]aquareo.MetricEntry, error) 
 	})
 
 	return arr, err
+}
+
+func (o *objectStore) Put(timespan int64, value float32) error {
+	return o.db.Update(func(tx *bbolt.Tx) error {
+		var kbuf, vbuf bytes.Buffer
+
+		if err := binary.Write(&kbuf, binary.BigEndian, timespan); err != nil {
+			return err
+		}
+
+		if err := binary.Write(&vbuf, binary.BigEndian, value); err != nil {
+			return err
+		}
+
+		return tx.Bucket([]byte(o.bucket)).Put(kbuf.Bytes(), vbuf.Bytes())
+	})
 }
