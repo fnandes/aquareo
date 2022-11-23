@@ -4,12 +4,7 @@ import (
 	"context"
 )
 
-//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Configurer,Storage,MetricStore,Subsystem,GPIODriver
-
-type Configurer interface {
-	Get() (Config, error)
-	Save(cfg Config) error
-}
+//go:generate mockgen -source=app.go -destination=../../mocks/app_mocks.go -package=mocks Controller,Storage,MetricStore,Subsystem,GPIODriver
 
 type WebServer interface {
 	Start(addr string)
@@ -22,7 +17,6 @@ type Controller interface {
 	Stop(ctx context.Context)
 
 	Storage() Storage
-	Config() Configurer
 }
 
 type GPIODriver interface {

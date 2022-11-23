@@ -7,7 +7,8 @@ type Config struct {
 }
 
 type TemperatureControllerConfig struct {
-	DeviceId string `json:"deviceId"`
+	DeviceId     string `json:"deviceId"`
+	TickInterval uint   `json:"tickInterval"`
 }
 
 type CustomMetric struct {

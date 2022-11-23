@@ -11,7 +11,6 @@ type controller struct {
 	gpio       aquareo.GPIODriver
 	fs         afero.Fs
 	storage    aquareo.Storage
-	cfgMgr     aquareo.Configurer
 	subSystems []aquareo.Subsystem
 }
 
@@ -19,17 +18,16 @@ func NewRPiController(
 	fs afero.Fs,
 	gpio aquareo.GPIODriver,
 	storage aquareo.Storage,
-	cfgMgr aquareo.Configurer,
 ) *controller {
 	return &controller{
 		gpio:    gpio,
 		fs:      fs,
 		storage: storage,
-		cfgMgr:  cfgMgr,
 	}
 }
 
 func (c *controller) Install(s aquareo.Subsystem) error {
+	c.subSystems = append(c.subSystems, s)
 	return s.Install(c)
 }
 
@@ -38,17 +36,21 @@ func (c *controller) Start() error {
 		return err
 	}
 
+	for _, ss := range c.subSystems {
+		go ss.Start()
+	}
+
 	return nil
 }
 
 func (c *controller) Stop(ctx context.Context) {
 	c.gpio.Close()
+
+	for _, ss := range c.subSystems {
+		ss.Stop(ctx)
+	}
 }
 
 func (c *controller) Storage() aquareo.Storage {
 	return c.storage
-}
-
-func (c *controller) Config() aquareo.Configurer {
-	return c.cfgMgr
 }

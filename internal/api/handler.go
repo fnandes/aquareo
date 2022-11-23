@@ -11,6 +11,7 @@ import (
 
 type handler struct {
 	ctrl aquareo.Controller
+	cfg  aquareo.Config
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -48,14 +49,7 @@ func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {
-	var cfg, err = h.ctrl.Config().Get()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	b, _ := json.Marshal(cfg)
+	b, _ := json.Marshal(h.cfg)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)

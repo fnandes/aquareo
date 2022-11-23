@@ -2,7 +2,6 @@ package modules
 
 import (
 	"context"
-	"errors"
 	"log"
 	"strconv"
 	"strings"
@@ -14,27 +13,18 @@ import (
 	"github.com/spf13/afero"
 )
 
-const (
-	RefreshThresholdSecs = 2
-	StoreThresholdSecs   = 60
-)
-
-var (
-	ErrReadSensor = errors.New("unable to read sensor data")
-)
-
 type module struct {
-	deviceId string
-	store    aquareo.MetricStore
-	fs       afero.Fs
-	stopper  chan struct{}
+	cfg     aquareo.TemperatureControllerConfig
+	store   aquareo.MetricStore
+	fs      afero.Fs
+	stopper chan struct{}
 }
 
-func NewTemperatureController(deviceId string, fs afero.Fs) *module {
+func NewTemperatureController(fs afero.Fs, cfg aquareo.TemperatureControllerConfig) *module {
 	return &module{
-		deviceId: deviceId,
-		fs:       fs,
-		stopper:  make(chan struct{}),
+		cfg:     cfg,
+		fs:      fs,
+		stopper: make(chan struct{}),
 	}
 }
 
@@ -54,24 +44,26 @@ func (tc *module) Start() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
+	tick := time.NewTicker(time.Duration(tc.cfg.TickInterval) * time.Millisecond)
+
 	go func() {
 		defer wg.Done()
 
 		for {
 			select {
 			case <-tc.stopper:
+				log.Println("temperature: stopping")
 				return
+			case <-tick.C:
+				val, err := tc.getValue()
+				if err != nil {
+					log.Printf("temperature: failed to get sensor data: %v\n", err)
+				} else {
+					tc.store.Put(time.Now().UTC().Unix(), val)
+				}
 			default:
+				continue
 			}
-
-			val, err := tc.getValue()
-			if err != nil {
-				log.Printf("temperature: failed to get sensor data: %v\n", err)
-			} else {
-				tc.store.Put(time.Now().UTC().Unix(), val)
-			}
-
-			time.Sleep(RefreshThresholdSecs * time.Second)
 		}
 	}()
 
@@ -83,25 +75,25 @@ func (tc *module) Stop(ctx context.Context) {
 }
 
 func (tc *module) getValue() (float32, error) {
-	data, err := afero.ReadFile(tc.fs, "/sys/bus/w1/devices/"+tc.deviceId+"/w1_slave")
+	data, err := afero.ReadFile(tc.fs, "/sys/bus/w1/devices/"+tc.cfg.DeviceId+"/w1_slave")
 	if err != nil {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	raw := string(data)
 
 	if !strings.Contains(raw, " YES") {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	i := strings.LastIndex(raw, "t=")
 	if i == -1 {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	c, err := strconv.ParseFloat(raw[i+2:len(raw)-1], 64)
 	if err != nil {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	return float32(c / 1000.0), nil

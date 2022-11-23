@@ -1,17 +1,7 @@
 {
   "name": "Main Aquarium",
-  "sensors": [],
-  "customMetrics": [{
-    "id": "Ca",
-    "name": "Calcium",
-    "unit": "ppm"
-  },{
-    "id": "Mg",
-    "name": "Magnesium",
-    "unit": "ppm"
-  },{
-    "id": "NH4",
-    "name": "Anmonia",
-    "unit": "ppm"
-  }]
+  "temperatureController": {
+    "deviceId": "device-1",
+    "tickInterval": 5000
+  }
 }
