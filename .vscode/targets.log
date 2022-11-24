@@ -6,18 +6,14 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
-make: *** No rule to make target `all'.  Stop.
 
-
-# Make data base, printed on Thu Nov 24 00:11:31 2022
+# Make data base, printed on Thu Nov 24 00:19:56 2022
 
 # Variables
 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
- 
 ?F = $(notdir $?)
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
@@ -74,7 +70,7 @@ HOME = /Users/pedro
 # default
 MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/pedro/Library/Application Support/Code/CachedData/74b1f979648cc44d385a2286793c226e611f59e7
+VSCODE_CODE_CACHE_PATH = /Users/pedro/Library/Application Support/Code/CachedData/6261075646f055b99068d3688932416f2346dd3b
 # environment
 LOGNAME = pedro
 # environment
@@ -112,7 +108,7 @@ TMPDIR = /var/folders/wj/1725zvdj6q35ccj_9nrm3xq80000gp/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/pedro/Library/Application Support/Code/1.71.2-main.sock
+VSCODE_IPC_HOOK = /Users/pedro/Library/Application Support/Code/1.73.1-main.sock
 # environment
 MallocNanoZone = 0
 # makefile
@@ -122,7 +118,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.1619930.1619936
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.2261618.2261625
 # environment
 HOMEBREW_PREFIX = /opt/homebrew
 # automatic
@@ -152,7 +148,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 743
+VSCODE_PID = 10337
 # variable set hash-table stats:
 # Load=69/1024=7%, Rehash=0, Collisions=2/92=2%
 
@@ -162,7 +158,6 @@ VSCODE_PID = 743
 
 # Directories
 
- 
 # . (device 16777232, inode 2204685): 28 files, no impossibilities.
 
 # 28 files, no impossibilities in 1 directories.
@@ -241,6 +236,8 @@ clean:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Thu Nov 24 00:11:31 2022
+# Finished Make data base on Thu Nov 24 00:19:56 2022
 
  
+make: *** No rule to make target `all'.  Stop.
+

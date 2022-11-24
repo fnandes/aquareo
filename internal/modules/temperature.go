@@ -14,11 +14,12 @@ import (
 )
 
 type module struct {
-	deviceId     string
-	tickInterval int16
-	store        aquareo.MetricStore
-	fs           afero.Fs
-	stopper      chan struct{}
+	deviceId         string
+	tickInterval     int32
+	snapshotInterval int32
+	store            aquareo.MetricStore
+	fs               afero.Fs
+	stopper          chan struct{}
 }
 
 func NewTemperatureController(fs afero.Fs, cfg aquareo.TemperatureControllerConfig) *module {
@@ -47,31 +48,30 @@ func (tc *module) Start() {
 	wg.Add(1)
 
 	tick := time.NewTicker(time.Duration(tc.tickInterval) * time.Millisecond)
+	snapshot := time.NewTicker(time.Duration(tc.snapshotInterval) * time.Millisecond)
 
 	go func() {
 		defer wg.Done()
 
+		var currVal float32
 		for {
 			select {
 			case <-tick.C:
 				val, err := tc.getValue()
 				if err != nil {
-					log.Printf("temperature: failed to get sensor data: %v\n", err)
+					log.Println(err)
 				} else {
-					log.Printf("temperature: metric [%v] collected", val)
-					tc.store.Put(time.Now().UTC().Unix(), val)
+					currVal = val
+				}
+			case <-snapshot.C:
+				if err := tc.store.Put(time.Now().UTC().Unix(), currVal); err != nil {
+					log.Println(err)
 				}
 			case <-tc.stopper:
 				log.Println("temperature: stopping")
 				return
 			default:
-			}
-
-			val, err := tc.getValue()
-			if err != nil {
-				log.Printf("temperature: failed to get sensor data: %v\n", err)
-			} else {
-				tc.store.Put(time.Now().UTC().Unix(), val)
+				continue
 			}
 		}
 	}()

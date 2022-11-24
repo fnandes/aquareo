@@ -7,9 +7,10 @@ type Config struct {
 }
 
 type TemperatureControllerConfig struct {
-	Enabled      bool   `json:"enabled"`
-	DeviceId     string `json:"deviceId"`
-	TickInterval int16  `json:"tickInterval"`
+	Enabled          bool   `json:"enabled"`
+	DeviceId         string `json:"deviceId"`
+	TickInterval     int32  `json:"tickInterval"`
+	SnapshotInterval int32  `json:"snapshotInterval"`
 }
 
 type CustomMetric struct {

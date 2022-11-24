@@ -3,6 +3,7 @@
   "temperatureController": {
     "enabled": true,
     "deviceId": "28-0621b2419d56",
-    "tickInterval": 5000
+    "tickInterval": 5000,
+    "snapshotInterval": 3600000
   }
 }

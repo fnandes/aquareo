@@ -42,6 +42,6 @@ type MetricStore interface {
 }
 
 type MetricEntry struct {
-	Timespan int64
-	Value    float32
+	Timespan int64   `json:"timespan"`
+	Value    float32 `json:"value"`
 }

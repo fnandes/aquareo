@@ -20,7 +20,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.PathPrefix("/ui/").Handler(
 		http.StripPrefix("/ui/", http.FileServer(http.Dir("ui/"))),
 	)
-	r.Use(corsMiddleware)
+	r.Use(mux.CORSMethodMiddleware(r))
 
 	r.HandleFunc("/", func(w http.ResponseWriter, res *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
@@ -28,6 +28,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	})
 	r.HandleFunc("/api/config", h.GetConfig).Methods("GET")
 	r.HandleFunc("/api/metrics/{bucket}", h.GetMetric).Methods("GET")
+	r.HandleFunc("/api/metrics/{bucket}", h.AddMetricEntry).Methods("POST")
 
 	r.ServeHTTP(w, req)
 }
@@ -42,15 +43,29 @@ func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	b, _ := json.Marshal(items)
+	json.NewEncoder(w).Encode(items)
+}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write(b)
+func (h *handler) AddMetricEntry(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+
+	var entry aquareo.MetricEntry
+	if err := json.NewDecoder(req.Body).Decode(&entry); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	store := h.ctrl.Storage().MetricStore(vars["bucket"])
+	if err := store.Put(entry.Timespan, entry.Value); err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {
-	b, _ := json.Marshal(h.ctrl.Config())
-
-	w.WriteHeader(http.StatusOK)
-	w.Write(b)
+	json.NewEncoder(w).Encode(h.ctrl.Config())
 }
