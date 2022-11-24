@@ -12,10 +12,11 @@ import (
 type Server struct {
 	ctrl aquareo.Controller
 	http *http.Server
+	cfg  aquareo.Config
 }
 
-func NewServer(ctrl aquareo.Controller) *Server {
-	return &Server{ctrl: ctrl}
+func NewServer(ctrl aquareo.Controller, cfg aquareo.Config) *Server {
+	return &Server{ctrl: ctrl, cfg: cfg}
 }
 
 func (s *Server) Start(addr string) {
@@ -23,6 +24,7 @@ func (s *Server) Start(addr string) {
 
 	r := &handler{
 		ctrl: s.ctrl,
+		cfg:  s.cfg,
 	}
 
 	s.http = &http.Server{

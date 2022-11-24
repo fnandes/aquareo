@@ -2,7 +2,6 @@ package modules
 
 import (
 	"context"
-	"errors"
 	"log"
 	"strconv"
 	"strings"
@@ -12,15 +11,6 @@ import (
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/pedrobfernandes/aquareo/internal/store"
 	"github.com/spf13/afero"
-)
-
-const (
-	RefreshThresholdSecs = 2
-	StoreThresholdSecs   = 60
-)
-
-var (
-	ErrReadSensor = errors.New("unable to read sensor data")
 )
 
 type module struct {
@@ -56,12 +46,23 @@ func (tc *module) Start() {
 	var wg sync.WaitGroup
 	wg.Add(1)
 
+	tick := time.NewTicker(time.Duration(tc.tickInterval) * time.Millisecond)
+
 	go func() {
 		defer wg.Done()
 
 		for {
 			select {
+			case <-tick.C:
+				val, err := tc.getValue()
+				if err != nil {
+					log.Printf("temperature: failed to get sensor data: %v\n", err)
+				} else {
+					log.Printf("temperature: metric [%v] collected", val)
+					tc.store.Put(time.Now().UTC().Unix(), val)
+				}
 			case <-tc.stopper:
+				log.Println("temperature: stopping")
 				return
 			default:
 			}
@@ -70,11 +71,8 @@ func (tc *module) Start() {
 			if err != nil {
 				log.Printf("temperature: failed to get sensor data: %v\n", err)
 			} else {
-				log.Printf("temperature: metric [%v] collected", val)
 				tc.store.Put(time.Now().UTC().Unix(), val)
 			}
-
-			time.Sleep(time.Duration(tc.tickInterval) * time.Millisecond)
 		}
 	}()
 
@@ -88,23 +86,23 @@ func (tc *module) Stop(ctx context.Context) {
 func (tc *module) getValue() (float32, error) {
 	data, err := afero.ReadFile(tc.fs, "/sys/bus/w1/devices/"+tc.deviceId+"/w1_slave")
 	if err != nil {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	raw := string(data)
 
 	if !strings.Contains(raw, " YES") {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	i := strings.LastIndex(raw, "t=")
 	if i == -1 {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	c, err := strconv.ParseFloat(raw[i+2:len(raw)-1], 64)
 	if err != nil {
-		return -1, ErrReadSensor
+		return -1, err
 	}
 
 	return float32(c / 1000.0), nil

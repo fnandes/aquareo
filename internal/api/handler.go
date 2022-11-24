@@ -11,6 +11,7 @@ import (
 
 type handler struct {
 	ctrl aquareo.Controller
+	cfg  aquareo.Config
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {

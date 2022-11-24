@@ -48,6 +48,10 @@ func (c *controller) Start() error {
 
 func (c *controller) Stop(ctx context.Context) {
 	c.gpio.Close()
+
+	for _, ss := range c.subSystems {
+		ss.Stop(ctx)
+	}
 }
 
 func (c *controller) Storage() aquareo.Storage {

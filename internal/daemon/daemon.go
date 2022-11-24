@@ -31,6 +31,10 @@ func (a *daemon) Stop(ctx context.Context) {
 	if a.ws != nil {
 		a.ws.Stop(ctx)
 	}
+
+	if a.ctrl != nil {
+		a.ctrl.Stop(ctx)
+	}
 }
 
 func (a *daemon) Start() error {
@@ -49,7 +53,7 @@ func (a *daemon) Start() error {
 		a.ctrl.Install(tc)
 	}
 
-	a.ws = api.NewServer(a.ctrl)
+	a.ws = api.NewServer(a.ctrl, cfg)
 
 	go func() {
 		a.ctrl.Start()
