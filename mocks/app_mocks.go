@@ -12,58 +12,6 @@ import (
 	aquareo "github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
-// MockConfigurer is a mock of Configurer interface.
-type MockConfigurer struct {
-	ctrl     *gomock.Controller
-	recorder *MockConfigurerMockRecorder
-}
-
-// MockConfigurerMockRecorder is the mock recorder for MockConfigurer.
-type MockConfigurerMockRecorder struct {
-	mock *MockConfigurer
-}
-
-// NewMockConfigurer creates a new mock instance.
-func NewMockConfigurer(ctrl *gomock.Controller) *MockConfigurer {
-	mock := &MockConfigurer{ctrl: ctrl}
-	mock.recorder = &MockConfigurerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockConfigurer) EXPECT() *MockConfigurerMockRecorder {
-	return m.recorder
-}
-
-// Get mocks base method.
-func (m *MockConfigurer) Get() (aquareo.Config, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get")
-	ret0, _ := ret[0].(aquareo.Config)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Get indicates an expected call of Get.
-func (mr *MockConfigurerMockRecorder) Get() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockConfigurer)(nil).Get))
-}
-
-// Save mocks base method.
-func (m *MockConfigurer) Save(cfg aquareo.Config) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Save", cfg)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Save indicates an expected call of Save.
-func (mr *MockConfigurerMockRecorder) Save(cfg interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockConfigurer)(nil).Save), cfg)
-}
-
 // MockWebServer is a mock of WebServer interface.
 type MockWebServer struct {
 	ctrl     *gomock.Controller
@@ -135,10 +83,10 @@ func (m *MockController) EXPECT() *MockControllerMockRecorder {
 }
 
 // Config mocks base method.
-func (m *MockController) Config() aquareo.Configurer {
+func (m *MockController) Config() aquareo.Config {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Config")
-	ret0, _ := ret[0].(aquareo.Configurer)
+	ret0, _ := ret[0].(aquareo.Config)
 	return ret0
 }
 

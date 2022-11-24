@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 	"github.com/pedrobfernandes/aquareo/internal/device"
 	"github.com/pedrobfernandes/aquareo/mocks"
 	"github.com/spf13/afero"
@@ -17,8 +18,9 @@ func TestRpiController(t *testing.T) {
 	gpio := mocks.NewMockGPIODriver(ctrl)
 	storage := mocks.NewMockStorage(ctrl)
 	installable := mocks.NewMockSubsystem(ctrl)
+	cfg := aquareo.Config{}
 
-	deviceCtrl := device.NewRPiController(fs, gpio, storage)
+	deviceCtrl := device.NewRPiController(fs, gpio, storage, cfg)
 
 	t.Run("Install", func(t *testing.T) {
 		installable.EXPECT().
