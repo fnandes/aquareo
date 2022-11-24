@@ -24,17 +24,19 @@ var (
 )
 
 type module struct {
-	deviceId string
-	store    aquareo.MetricStore
-	fs       afero.Fs
-	stopper  chan struct{}
+	deviceId     string
+	tickInterval int16
+	store        aquareo.MetricStore
+	fs           afero.Fs
+	stopper      chan struct{}
 }
 
-func NewTemperatureController(deviceId string, fs afero.Fs) *module {
+func NewTemperatureController(fs afero.Fs, cfg aquareo.TemperatureControllerConfig) *module {
 	return &module{
-		deviceId: deviceId,
-		fs:       fs,
-		stopper:  make(chan struct{}),
+		deviceId:     cfg.DeviceId,
+		tickInterval: cfg.TickInterval,
+		fs:           fs,
+		stopper:      make(chan struct{}),
 	}
 }
 
@@ -68,10 +70,11 @@ func (tc *module) Start() {
 			if err != nil {
 				log.Printf("temperature: failed to get sensor data: %v\n", err)
 			} else {
+				log.Printf("temperature: metric [%v] collected", val)
 				tc.store.Put(time.Now().UTC().Unix(), val)
 			}
 
-			time.Sleep(RefreshThresholdSecs * time.Second)
+			time.Sleep(time.Duration(tc.tickInterval) * time.Millisecond)
 		}
 	}()
 

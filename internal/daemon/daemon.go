@@ -2,6 +2,7 @@ package daemon
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/pedrobfernandes/aquareo/internal/api"
 	"github.com/pedrobfernandes/aquareo/internal/aquareo"
@@ -36,11 +37,17 @@ func (a *daemon) Start() error {
 	s := store.NewBoldDbStorage(a.db)
 	gpio := device.NewRPIODriver()
 
-	tc := modules.NewTemperatureController("device-id", a.fs)
-	cfgMgr := store.NewFileConfigurer("config.json", a.fs)
+	cfg, err := loadConfig(a.fs, "config.json")
+	if err != nil {
+		panic(err)
+	}
 
-	a.ctrl = device.NewRPiController(a.fs, gpio, s, cfgMgr)
-	a.ctrl.Install(tc)
+	a.ctrl = device.NewRPiController(a.fs, gpio, s, cfg)
+
+	if cfg.TemperatureController.Enabled {
+		tc := modules.NewTemperatureController(a.fs, cfg.TemperatureController)
+		a.ctrl.Install(tc)
+	}
 
 	a.ws = api.NewServer(a.ctrl)
 
@@ -53,4 +60,18 @@ func (a *daemon) Start() error {
 	}()
 
 	return nil
+}
+
+func loadConfig(fs afero.Fs, name string) (aquareo.Config, error) {
+	buf, err := afero.ReadFile(fs, name)
+	if err != nil {
+		return aquareo.Config{}, err
+	}
+
+	var config aquareo.Config
+	if err := json.Unmarshal(buf, &config); err != nil {
+		return aquareo.Config{}, err
+	}
+
+	return config, nil
 }

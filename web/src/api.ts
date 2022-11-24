@@ -1,15 +1,13 @@
 import { demoData } from './tests/dummy-data'
-import { ControllableGear, Metric, MetricRecord } from './types'
+import { Config, ControllableGear, MetricEntry } from './types'
 
-const baseUrl = 'http://raspberrypi.local:8082'
+const baseUrl = 'http://raspberrypi.local:8082/api'
 
-export const listMetrics = async (): Promise<Metric[]> => {
-  return await fetch(`${baseUrl}/metrics`).then(res => res.json())
-}
+export const fetchConfig = async (): Promise<Config> =>
+  await fetch(`${baseUrl}/config`).then(res => res.json())
 
-export const fetchMetricData = async (metricId: string): Promise<MetricRecord[]> => {
-  return await fetch(`${baseUrl}/metrics/${metricId}`).then(res => res.json())
-}
+export const fetchMetricData = async (bucket: string): Promise<MetricEntry[]> =>
+  await fetch(`${baseUrl}/metrics/${bucket}`).then(res => res.json())
 
 export const fetchGears = async (): Promise<ControllableGear[]> => {
   return Promise.resolve(demoData.gears)

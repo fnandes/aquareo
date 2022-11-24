@@ -25,8 +25,8 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
 		http.ServeFile(w, res, "ui/index.html")
 	})
-	r.HandleFunc("/config", h.GetConfig).Methods("GET")
-	r.HandleFunc("/metrics/{bucket}", h.GetMetric).Methods("GET")
+	r.HandleFunc("/api/config", h.GetConfig).Methods("GET")
+	r.HandleFunc("/api/metrics/{bucket}", h.GetMetric).Methods("GET")
 
 	r.ServeHTTP(w, req)
 }
@@ -48,14 +48,7 @@ func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 }
 
 func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {
-	var cfg, err = h.ctrl.Config().Get()
-	if err != nil {
-		log.Println(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	b, _ := json.Marshal(cfg)
+	b, _ := json.Marshal(h.ctrl.Config())
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
