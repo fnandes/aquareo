@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
+	aquareo "github.com/fnandes/aquareo/internal/aquareo"
 	gomock "github.com/golang/mock/gomock"
-	aquareo "github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
 // MockWebServer is a mock of WebServer interface.

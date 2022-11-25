@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/store"
+	"github.com/fnandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/store"
 	"github.com/stretchr/testify/assert"
 	"go.etcd.io/bbolt"
 )

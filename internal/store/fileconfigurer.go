@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/aquareo"
 	"github.com/spf13/afero"
 )
 

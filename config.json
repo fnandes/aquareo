@@ -4,6 +4,19 @@
     "enabled": true,
     "deviceId": "28-0621b2419d56",
     "tickInterval": 5000,
-    "snapshotInterval": 3600000
-  }
+    "snapshotInterval": 30000
+  },
+  "customMetrics": [{
+    "id": "ph",
+    "displayName": "Ph",
+    "metricUnit": ""
+  },{
+    "id": "po4",
+    "displayName": "Phosphate",
+    "metricUnit": "ppm"
+  },{
+    "id": "ca",
+    "displayName": "Calcium",
+    "metricUnit": "ppm"
+  }]
 }

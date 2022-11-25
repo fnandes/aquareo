@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/fnandes/aquareo/internal/aquareo"
 	"github.com/gorilla/mux"
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
 )
 
 type handler struct {
@@ -20,6 +20,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.PathPrefix("/ui/").Handler(
 		http.StripPrefix("/ui/", http.FileServer(http.Dir("ui/"))),
 	)
+
 	r.Use(mux.CORSMethodMiddleware(r))
 
 	r.HandleFunc("/", func(w http.ResponseWriter, res *http.Request) {

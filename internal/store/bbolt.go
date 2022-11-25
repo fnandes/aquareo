@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/aquareo"
 	"go.etcd.io/bbolt"
 )
 

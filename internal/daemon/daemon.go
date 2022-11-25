@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/pedrobfernandes/aquareo/internal/api"
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/device"
-	"github.com/pedrobfernandes/aquareo/internal/modules"
-	"github.com/pedrobfernandes/aquareo/internal/store"
+	"github.com/fnandes/aquareo/internal/api"
+	"github.com/fnandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/device"
+	"github.com/fnandes/aquareo/internal/modules"
+	"github.com/fnandes/aquareo/internal/store"
 	"github.com/spf13/afero"
 	"go.etcd.io/bbolt"
 )

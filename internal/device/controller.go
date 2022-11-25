@@ -3,7 +3,7 @@ package device
 import (
 	"context"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/aquareo"
 	"github.com/spf13/afero"
 )
 

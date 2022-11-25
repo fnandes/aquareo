@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/fnandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/device"
+	"github.com/fnandes/aquareo/mocks"
 	"github.com/golang/mock/gomock"
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/device"
-	"github.com/pedrobfernandes/aquareo/mocks"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 )

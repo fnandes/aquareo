@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
-	"github.com/pedrobfernandes/aquareo/internal/store"
+	"github.com/fnandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/store"
 	"github.com/spf13/afero"
 )
 
@@ -24,10 +24,11 @@ type module struct {
 
 func NewTemperatureController(fs afero.Fs, cfg aquareo.TemperatureControllerConfig) *module {
 	return &module{
-		deviceId:     cfg.DeviceId,
-		tickInterval: cfg.TickInterval,
-		fs:           fs,
-		stopper:      make(chan struct{}),
+		deviceId:         cfg.DeviceId,
+		tickInterval:     cfg.TickInterval,
+		snapshotInterval: cfg.SnapshotInterval,
+		fs:               fs,
+		stopper:          make(chan struct{}),
 	}
 }
 

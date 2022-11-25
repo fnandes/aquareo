@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/daemon"
+	"github.com/fnandes/aquareo/internal/daemon"
 	"github.com/spf13/afero"
 
 	"go.etcd.io/bbolt"

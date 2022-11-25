@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/pedrobfernandes/aquareo/internal/aquareo"
+	"github.com/fnandes/aquareo/internal/aquareo"
 )
 
 type Server struct {
