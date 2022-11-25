@@ -17,8 +17,8 @@ export type CustomMetric = {
 }
 
 export type MetricEntry = {
-  Timespan: number
-  Value: number
+  timespan: number
+  value: number
 }
 
 export type ControllableGear = {

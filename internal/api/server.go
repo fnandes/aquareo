@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/fnandes/aquareo/internal/aquareo"
+	"github.com/gorilla/handlers"
 )
 
 type Server struct {
@@ -29,7 +30,7 @@ func (s *Server) Start(addr string) {
 
 	s.http = &http.Server{
 		Addr:         addr,
-		Handler:      r,
+		Handler:      handlers.CORS()(r),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 	}

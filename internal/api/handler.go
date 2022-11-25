@@ -21,8 +21,6 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		http.StripPrefix("/ui/", http.FileServer(http.Dir("ui/"))),
 	)
 
-	r.Use(mux.CORSMethodMiddleware(r))
-
 	r.HandleFunc("/", func(w http.ResponseWriter, res *http.Request) {
 		w.Header().Add("Content-Type", "text/html")
 		http.ServeFile(w, res, "ui/index.html")
@@ -37,7 +35,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (h *handler) GetMetric(w http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 
-	items, err := h.ctrl.Storage().MetricStore(vars["bucket"]).List(40)
+	items, err := h.ctrl.Storage().MetricStore(vars["bucket"]).List(int(h.cfg.SystemSettings.MetricsLimit))
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)

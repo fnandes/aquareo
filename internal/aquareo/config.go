@@ -4,6 +4,7 @@ type Config struct {
 	Name                  string                      `json:"name"`
 	TemperatureController TemperatureControllerConfig `json:"temperatureController"`
 	CustomMetrics         []CustomMetric              `json:"customMetrics"`
+	SystemSettings        SystemSettings              `json:"systemSettings"`
 }
 
 type TemperatureControllerConfig struct {
@@ -17,4 +18,8 @@ type CustomMetric struct {
 	Id          string `json:"id"`
 	DisplayName string `json:"displayName"`
 	MetricUnit  string `json:"metricUnit"`
+}
+
+type SystemSettings struct {
+	MetricsLimit int8 `json:"metricsLimit"`
 }

@@ -1,5 +1,8 @@
 {
   "name": "Main Aquarium",
+  "systemSettings": {
+    "metricsLimit": 20
+  },
   "temperatureController": {
     "enabled": true,
     "deviceId": "28-0621b2419d56",

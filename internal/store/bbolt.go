@@ -48,15 +48,18 @@ func (o *objectStore) List(size int) ([]aquareo.MetricEntry, error) {
 	var arr []aquareo.MetricEntry
 
 	err := o.db.View(func(tx *bbolt.Tx) error {
-		cur := tx.Bucket([]byte(o.bucket)).Cursor()
-		i := 0
+		bucket := tx.Bucket([]byte(o.bucket))
+		if bucket != nil {
+			cur := bucket.Cursor()
+			i := 0
 
-		for k, v := cur.Last(); k != nil && i < size; k, v = cur.Prev() {
-			arr = append(arr, aquareo.MetricEntry{
-				Timespan: int64(binary.BigEndian.Uint64(k)),
-				Value:    math.Float32frombits(binary.BigEndian.Uint32(v)),
-			})
-			i += 1
+			for k, v := cur.Last(); k != nil && i < size; k, v = cur.Prev() {
+				arr = append(arr, aquareo.MetricEntry{
+					Timespan: int64(binary.BigEndian.Uint64(k)),
+					Value:    math.Float32frombits(binary.BigEndian.Uint32(v)),
+				})
+				i += 1
+			}
 		}
 
 		return nil
