@@ -1,16 +1,17 @@
 import * as React from 'react'
 
-export type CardProps = {
+export type CardProps = React.PropsWithChildren & {
   title: string
-  children: React.ReactElement
 }
 export const Card: React.FC<CardProps> = ({ title, children }) => (
-  <div className='bg-white rounded shadow-sm'>
+  <div className='bg-white rounded shadow'>
     <div className='py-2 px-4 font-semibold text-sm text-slate-500'>
       {title}
     </div>
-    <div>
-      {children}
-    </div>
+    {children}
   </div>
+)
+
+export const CardBody: React.FC<React.PropsWithChildren> = ({ children }) => (
+  <div className="p-4">{children}</div>
 )

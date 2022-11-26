@@ -7,7 +7,7 @@
     "enabled": true,
     "deviceId": "28-0621b2419d56",
     "tickInterval": 5000,
-    "snapshotInterval": 30000
+    "snapshotInterval": 30000000
   },
   "customMetrics": [{
     "id": "ph",
