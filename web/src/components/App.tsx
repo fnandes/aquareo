@@ -1,3 +1,5 @@
+import Container from '@mui/material/Container'
+import Toolbar from '@mui/material/Toolbar'
 import { useQuery } from '@tanstack/react-query'
 import * as React from 'react'
 import * as api from '../api'
@@ -11,18 +13,22 @@ export const App: React.FC = () => {
 
   return (
     <ConfigProvider config={config || {} as Config}>
-      <div className='font-sans bg-slate-200 flex flex-col w-screen h-screen overflow-hidden'>
+      <div>
         <NavBar />
-        <main className='flex-1 overflow-auto'>
-          <div className='container mx-auto'>
-            {config ? (
-              <div className='m-4'>
-                <Home />
-              </div>
+        <Toolbar />
+        <Container>
 
-            ) : 'Loading ...'}
-          </div>
-        </main>
+          <main className='flex-1 overflow-auto'>
+            <div className='container mx-auto'>
+              {config ? (
+                <div className='m-4'>
+                  <Home />
+                </div>
+
+              ) : 'Loading ...'}
+            </div>
+          </main>
+        </Container>
       </div>
     </ConfigProvider>
   )

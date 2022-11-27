@@ -1,7 +1,7 @@
+
+import { Stack, Button, Grid, Paper } from '@mui/material'
 import * as React from 'react'
 import { useConfig } from '../../hooks/useConfig'
-import { Button } from '../button'
-import { Card, CardBody } from '../card'
 import { MetricCard } from './MetricCard'
 
 export type HomeProps = unknown
@@ -10,31 +10,30 @@ export const Home: React.FC<HomeProps> = () => {
   const config = useConfig()
 
   return (
-    <div>
-      <div className="mb-4">
-        <Card title="Add manual entry">
-          <CardBody>
-            <Button label="Temperature" />
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Paper elevation={1} sx={{ p: 2 }}>
+          <Stack spacing={2} direction="row">
+            <Button variant="outlined" size="small">Temperature</Button>
             {config.customMetrics?.map(metric => (
-              <Button key={metric.id} label={metric.displayName} />
+              <Button key={metric.id} variant="outlined" size="small">{metric.displayName}</Button>
             ))}
-          </CardBody>
-        </Card>
-      </div>
+          </Stack>
+        </Paper>
+      </Grid>
       {config?.temperatureController?.enabled ? (
-        <div className='mb-4'>
+        <Grid item xs={12}>
           <MetricCard bucket="temperature" title="Temperature" metricUnit="C" />
-        </div>
+        </Grid>
       ) : null}
-      {config.customMetrics.length ? (
-        <div className="flex flex-wrap -m-2">
-          {config.customMetrics.map(metric => (
-            <div key={metric.id} className="basis-1/2 p-2">
-              <MetricCard bucket={`cm_${metric.id}`} title={metric.displayName} metricUnit={metric.metricUnit} />
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </div>
+      {config.customMetrics.length && config.customMetrics.map(metric => (
+        <Grid key={metric.id} item xs={6}>
+          <MetricCard
+            bucket={`cm_${metric.id}`}
+            title={metric.displayName}
+            metricUnit={metric.metricUnit} />
+        </Grid>
+      ))}
+    </Grid>
   )
 }

@@ -4,7 +4,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import * as colors from 'tailwindcss/colors'
 import * as moment from 'moment'
 import * as api from '../../api'
-import { Card } from '../card'
+import { Card, CardHeader, Paper, Typography } from '@mui/material'
 
 export type MetricCardProps = {
   bucket: string
@@ -17,7 +17,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
   const { data = [] } = useQuery(['metric', bucket], () => api.fetchMetricData(bucket))
 
   return (
-    <Card title={title}>
+    <Paper>
+      <Typography variant="subtitle1" sx={{ p: 1 }} gutterBottom>{title}</Typography>
       <ResponsiveContainer height={150} width="99%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -27,6 +28,6 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
           <Line type="monotone" connectNulls dataKey="value" stroke={colors.purple[500]} strokeWidth={3} unit={metricUnit} />
         </LineChart>
       </ResponsiveContainer>
-    </Card>
+    </Paper>
   )
 }

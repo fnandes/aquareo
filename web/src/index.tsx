@@ -2,8 +2,9 @@ import * as React from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './components/App'
+import CssBaseline from '@mui/material/CssBaseline'
 
-import './css/tailwind.css'
+//import './css/tailwind.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = createRoot(document.getElementById('root') as HTMLElement)
   root.render(
     <QueryClientProvider client={queryClient}>
-      <App />
+      <>
+        <App />
+        <CssBaseline />
+      </>
     </QueryClientProvider>)
 })
