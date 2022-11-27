@@ -1,5 +1,7 @@
 import * as React from 'react'
 import { useConfig } from '../../hooks/useConfig'
+import { Button } from '../button'
+import { Card, CardBody } from '../card'
 import { MetricCard } from './MetricCard'
 
 export type HomeProps = unknown
@@ -9,8 +11,18 @@ export const Home: React.FC<HomeProps> = () => {
 
   return (
     <div>
+      <div className="mb-4">
+        <Card title="Add manual entry">
+          <CardBody>
+            <Button label="Temperature" />
+            {config.customMetrics?.map(metric => (
+              <Button key={metric.id} label={metric.displayName} />
+            ))}
+          </CardBody>
+        </Card>
+      </div>
       {config?.temperatureController?.enabled ? (
-        <div className='mb-8'>
+        <div className='mb-4'>
           <MetricCard bucket="temperature" title="Temperature" metricUnit="C" />
         </div>
       ) : null}

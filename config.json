@@ -9,17 +9,26 @@
     "tickInterval": 5000,
     "snapshotInterval": 30000000
   },
-  "customMetrics": [{
-    "id": "ph",
-    "displayName": "Ph",
-    "metricUnit": ""
-  },{
-    "id": "po4",
-    "displayName": "Phosphate",
-    "metricUnit": "ppm"
-  },{
-    "id": "ca",
-    "displayName": "Calcium",
-    "metricUnit": "ppm"
-  }]
+  "customMetrics": [
+    {
+      "id": "ph",
+      "displayName": "Ph",
+      "metricUnit": ""
+    },
+    {
+      "id": "po4",
+      "displayName": "Phosphate",
+      "metricUnit": "ppm"
+    },
+    {
+      "id": "ca",
+      "displayName": "Calcium",
+      "metricUnit": "ppm"
+    },
+    {
+      "id": "kh",
+      "displayName": "kH",
+      "metricUnit": ""
+    }
+  ]
 }

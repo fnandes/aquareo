@@ -7,3 +7,6 @@ clean:
 
 test:
 	go test ./...
+
+gen:
+	go generate ./...
