@@ -3,6 +3,8 @@ package daemon
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"log"
 
 	"github.com/fnandes/aquareo/internal/api"
 	"github.com/fnandes/aquareo/internal/aquareo"
@@ -51,6 +53,12 @@ func (a *daemon) Start() error {
 	if cfg.TemperatureController.Enabled {
 		tc := modules.NewTemperatureController(a.fs, cfg.TemperatureController)
 		a.ctrl.Install(tc)
+	}
+
+	for _, c := range cfg.CustomMetrics {
+		if err := s.CreateBucket(fmt.Sprintf("cm_%s", c.Id)); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	a.ws = api.NewServer(a.ctrl, cfg)

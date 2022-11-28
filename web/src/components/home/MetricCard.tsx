@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useMantineTheme, Paper, Text } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import * as moment from 'moment'
+import * as moment from 'dayjs'
 import * as api from '../../api'
 
 export type MetricCardProps = {

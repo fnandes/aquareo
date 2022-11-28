@@ -9,4 +9,10 @@ export const fetchMetricData = async (bucket: string): Promise<MetricEntry[]> =>
   await fetch(`${baseUrl}/metrics/${bucket}`).then(res => res.json())
 
 export const addMetricEntry = async (bucket: string, entry: MetricEntry) =>
-  await fetch(`${baseUrl}/metrics/${bucket}`, { method: 'POST' })
+  await fetch(`${baseUrl}/metrics/${bucket}`, {
+    headers: {
+      'Accept': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify(entry)
+  })

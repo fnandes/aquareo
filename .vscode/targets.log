@@ -6,8 +6,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
+ 
+make: *** No rule to make target `all'.  Stop.
 
-# Make data base, printed on Thu Nov 24 00:19:56 2022
+
+# Make data base, printed on Mon Nov 28 22:36:06 2022
 
 # Variables
 
@@ -32,21 +35,15 @@ _ = /usr/bin/make
 # makefile (from `Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # environment
-VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
-# environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
 INFOPATH = /opt/homebrew/share/info:
 # environment
 VSCODE_CWD = /
 # environment
-GOPROXY = https://proxy.golang.org,direct
-# environment
 PATH = /opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
 # environment
 LSCOLORS = Gxfxcxdxbxegedabagacad
-# environment
-GOPATH = /Users/pedro/go
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # default
@@ -64,7 +61,7 @@ ORIGINAL_XDG_CURRENT_DESKTOP = undefined
 # environment
 MANPATH = /opt/homebrew/share/man::
 # environment
-GOMODCACHE = /Users/pedro/go/pkg/mod
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /Users/pedro
 # default
@@ -148,9 +145,9 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 10337
+VSCODE_PID = 22381
 # variable set hash-table stats:
-# Load=69/1024=7%, Rehash=0, Collisions=2/92=2%
+# Load=66/1024=6%, Rehash=0, Collisions=1/89=1%
 
 # Pattern-specific Variable Values
 
@@ -158,9 +155,9 @@ VSCODE_PID = 10337
 
 # Directories
 
-# . (device 16777232, inode 2204685): 28 files, no impossibilities.
+# . (device 16777232, inode 2204685): 30 files, no impossibilities.
 
-# 28 files, no impossibilities in 1 directories.
+# 30 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -194,7 +191,7 @@ all:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-11-22 23:26:35
+#  Last modified 2022-11-27 23:27:07
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -206,6 +203,14 @@ test:
 #  File has not been updated.
 #  commands to execute (from `Makefile', line 9):
 	go test ./...
+	
+
+gen:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 12):
+	go generate ./...
 	
 
 # Not a target:
@@ -224,7 +229,7 @@ clean:
 	
 
 # files hash-table stats:
-# Load=7/1024=1%, Rehash=0, Collisions=0/19=0%
+# Load=8/1024=1%, Rehash=0, Collisions=0/20=0%
 # VPATH Search Paths
 
 # No `vpath' search paths.
@@ -236,8 +241,6 @@ clean:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Thu Nov 24 00:19:56 2022
+# Finished Make data base on Mon Nov 28 22:36:06 2022
 
  
-make: *** No rule to make target `all'.  Stop.
-

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Button, Paper, Grid, Group } from '@mantine/core'
 import { useConfig } from '../../hooks/useConfig'
 import { MetricCard } from './MetricCard'
-import { MetricFormModal } from '../metricFormModal/MetricFormModal'
+import { MetricEntryFormModal } from '../metricEntry'
 
 export type HomeProps = unknown
 
@@ -19,12 +19,6 @@ export const Home: React.FC<HomeProps> = () => {
   const handleMetricModalClose = () => {
     setMetricModalOpen(false)
     setLogMetricId('')
-  }
-
-  const handleMetricModalSave = () => {
-    setMetricModalOpen(false)
-    setLogMetricId('')
-    alert('test')
   }
 
   return (
@@ -57,7 +51,7 @@ export const Home: React.FC<HomeProps> = () => {
           </Grid.Col>
         ))}
       </Grid>
-      <MetricFormModal
+      <MetricEntryFormModal
         isOpen={metricModalOpen}
         onClose={handleMetricModalClose}
         metricId={logMetricId} />
