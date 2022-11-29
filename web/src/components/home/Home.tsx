@@ -1,24 +1,23 @@
 import * as React from 'react'
 import { Button, Paper, Grid, Group } from '@mantine/core'
 import { useConfig } from '../../hooks/useConfig'
-import { MetricCard } from './MetricCard'
-import { MetricEntryFormModal } from '../metricEntry'
+import { MetricCard } from '../metrics'
+import { openContextModal } from '@mantine/modals'
 
 export type HomeProps = unknown
 
 export const Home: React.FC<HomeProps> = () => {
   const config = useConfig()
-  const [metricModalOpen, setMetricModalOpen] = React.useState(false)
-  const [logMetricId, setLogMetricId] = React.useState<string>('')
 
-  const handleMetricBtnClick = (metricId: string) => {
-    setMetricModalOpen(true)
-    setLogMetricId(metricId)
-  }
-
-  const handleMetricModalClose = () => {
-    setMetricModalOpen(false)
-    setLogMetricId('')
+  const openAddMetricModal = (metricId: string, bucket: string) => {
+    const metric = config.customMetrics.find(m => m.id === metricId)
+    if (metric) {
+      openContextModal({
+        modal: 'addMetricEntry',
+        title: `Log ${metric.displayName}`,
+        innerProps: { bucket }
+      })
+    }
   }
 
   return (
@@ -30,9 +29,7 @@ export const Home: React.FC<HomeProps> = () => {
               {config.customMetrics?.map(metric => (
                 <Button
                   key={metric.id}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleMetricBtnClick(metric.id)}>{metric.displayName}</Button>
+                  onClick={() => openAddMetricModal(metric.id, `cm_${metric.id}`)}>{metric.displayName}</Button>
               ))}
             </Group>
           </Paper>
@@ -51,10 +48,6 @@ export const Home: React.FC<HomeProps> = () => {
           </Grid.Col>
         ))}
       </Grid>
-      <MetricEntryFormModal
-        isOpen={metricModalOpen}
-        onClose={handleMetricModalClose}
-        metricId={logMetricId} />
     </>
   )
 }
