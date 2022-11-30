@@ -23,14 +23,12 @@ func TestRpiController(t *testing.T) {
 	deviceCtrl := device.NewRPiController(fs, gpio, storage, cfg)
 
 	t.Run("Install", func(t *testing.T) {
-		installable.EXPECT().
-			Install(deviceCtrl).
-			Times(1)
+		installable.EXPECT().Install(deviceCtrl).Times(1).Return(nil)
 		assert.NoError(t, deviceCtrl.Install(installable))
 	})
 
 	t.Run("Start", func(t *testing.T) {
-		installable.EXPECT().Start()
+		installable.EXPECT().Start().Return()
 		gpio.EXPECT().Open().Return(nil)
 
 		assert.NoError(t, deviceCtrl.Start())
