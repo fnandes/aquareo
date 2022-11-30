@@ -7,7 +7,7 @@ import * as api from '../../api'
 import * as dayjs from 'dayjs'
 
 export const MetricEntries: React.FC = () => {
-  const { bucket } = useParams<{ bucket: string }>()
+  const { bucket = '' } = useParams<{ bucket: string }>()
   const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
 
   const deleteMetricEntry = useMutation(['metric', bucket], api.metrics(bucket).deleteEntry)
