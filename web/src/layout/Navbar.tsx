@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { createStyles, Header, Container, Group, Text } from '@mantine/core'
+import { createStyles, Header, Container, Group, Text, Anchor } from '@mantine/core'
+import { useHref } from 'react-router-dom'
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -31,16 +32,18 @@ const useStyles = createStyles((theme) => ({
   }
 }))
 
-export const NavBar: React.FC = () => {
+export const Navbar: React.FC = () => {
   const { classes } = useStyles()
 
   return (
     <Header height={56} className={classes.header}>
       <Container size="xl">
         <div className={classes.inner}>
-          <Text weight={500} size="lg" color="white">Aquareo</Text>
+          <Anchor href={useHref('/')}>
+            <Text weight={500} size="lg" color="white">Aquareo</Text>
+          </Anchor>
           <Group spacing={5}>
-            <a href="#" className={classes.link}>Home</a>
+            <a href={useHref('/')} className={classes.link}>Dashboard</a>
           </Group>
         </div>
       </Container>

@@ -39,6 +39,7 @@ type Storage interface {
 type MetricStore interface {
 	Put(timespan int64, value float32) error
 	List(size int) ([]MetricEntry, error)
+	Delete(timespan int64) error
 }
 
 type MetricEntry struct {

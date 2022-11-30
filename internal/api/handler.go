@@ -2,8 +2,10 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/fnandes/aquareo/internal/aquareo"
 	"github.com/gorilla/mux"
@@ -28,6 +30,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.HandleFunc("/api/config", h.GetConfig).Methods("GET")
 	r.HandleFunc("/api/metrics/{bucket}", h.GetMetric).Methods("GET")
 	r.HandleFunc("/api/metrics/{bucket}", h.AddMetricEntry).Methods("POST")
+	r.HandleFunc("/api/metrics/{bucket}/{timespan}", h.DeleteMetricEntry).Methods("DELETE")
 
 	r.ServeHTTP(w, req)
 }
@@ -63,6 +66,25 @@ func (h *handler) AddMetricEntry(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h *handler) DeleteMetricEntry(w http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+
+	store := h.ctrl.Storage().MetricStore(vars["bucket"])
+
+	key, err := strconv.ParseInt(vars["timespan"], 10, 0)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	if err := store.Delete(key); err != nil {
+		log.Println(fmt.Errorf("DeleteMetricEntry: unable to delete: %v", err))
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *handler) GetConfig(w http.ResponseWriter, req *http.Request) {

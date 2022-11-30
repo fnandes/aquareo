@@ -83,3 +83,15 @@ func (o *objectStore) Put(timespan int64, value float32) error {
 		return tx.Bucket([]byte(o.bucket)).Put(kbuf.Bytes(), vbuf.Bytes())
 	})
 }
+
+func (o *objectStore) Delete(timespan int64) error {
+	return o.db.Update(func(tx *bbolt.Tx) error {
+		var kbuf bytes.Buffer
+
+		if err := binary.Write(&kbuf, binary.BigEndian, timespan); err != nil {
+			return err
+		}
+
+		return tx.Bucket([]byte(o.bucket)).Delete(kbuf.Bytes())
+	})
+}

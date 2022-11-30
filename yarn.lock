@@ -1527,6 +1527,11 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.0.3.tgz#953b88c20ea00d0eddaffdc1b115c08474aa295d"
   integrity sha512-ceuyTSs7PZ/tQqi19YZNBc5X7kj1f8p+4DIyrcIYFY9h+hd1OKm4RqtiWldR9eGEvIiJfsqwM4BsuCtRIuEw6Q==
 
+"@tabler/icons@^1.114.0":
+  version "1.114.0"
+  resolved "https://registry.yarnpkg.com/@tabler/icons/-/icons-1.114.0.tgz#b2d03b9210787838ce7fcf30ea5fed09a3f93c05"
+  integrity sha512-TI6l2YhGlpZGutaT/zrzTjLF0lsdB648QzM80Dhe22rL2lggvqOzcyWTw6ctmFTySgCwkmEnrUImOICjTlqoAA==
+
 "@tanstack/query-core@4.3.8":
   version "4.3.8"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.3.8.tgz#d5f07c1d9d4f83f16f0bed7f3b245fa0e557b037"

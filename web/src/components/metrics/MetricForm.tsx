@@ -19,13 +19,10 @@ export const AddEntryModal = ({ context, id, innerProps }: ContextModalProps<{ b
     }
   })
 
-  const addMetricEntry = useMutation((d: MetricFormState) => api.addMetricEntry(innerProps.bucket, {
-    timespan: dayjs(d.timespan).unix(),
-    value: d.value
-  }))
+  const addMetricEntry = useMutation(['metric', innerProps.bucket], api.metrics(innerProps.bucket).addEntry)
 
-  const handleSaveClick: SubmitHandler<MetricFormState> = values => {
-    addMetricEntry.mutate(values)
+  const handleSaveClick: SubmitHandler<MetricFormState> = ({ timespan, value }) => {
+    addMetricEntry.mutate({ timespan: dayjs(timespan).unix(), value })
     context.closeModal(id)
   }
 

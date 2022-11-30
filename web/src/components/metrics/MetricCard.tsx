@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useMantineTheme, Text, Card, Group, Button } from '@mantine/core'
+import { IconList } from '@tabler/icons'
 import { useQuery } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import * as moment from 'dayjs'
@@ -14,15 +15,15 @@ export type MetricCardProps = {
 
 export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUnit }) => {
   const { colors } = useMantineTheme()
-  const tickFormatter = (val: number) => moment.unix(val).format('D/M hh:mm')
-  const { data = [] } = useQuery(['metric', bucket], () => api.fetchMetricData(bucket))
+  const tickFormatter = (val: number) => moment.unix(val).format('L LT')
+  const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
 
   return (
     <Card shadow="xs" p="xs">
       <Group position="apart" mb="sm">
         <Text weight={500}>{title}</Text>
         <div>
-          <Button component="a" href={useHref(`metrics/${bucket}`)} variant="light">List</Button>
+          <Button component="a" leftIcon={<IconList />} href={useHref(`metrics/${bucket}`)} variant="light" size="xs">view list</Button>
         </div>
       </Group>
       <Card.Section>
