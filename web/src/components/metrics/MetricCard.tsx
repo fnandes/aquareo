@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useMantineTheme, Text, Card, Group, Button } from '@mantine/core'
+import { useMantineTheme, Text, Card, Group, Button, Badge, Anchor, Title } from '@mantine/core'
 import { IconList } from '@tabler/icons'
 import { useQuery } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -14,17 +14,23 @@ export type MetricCardProps = {
 }
 
 export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUnit }) => {
+  const [max, setMax] = React.useState(0)
+
   const { colors } = useMantineTheme()
   const tickFormatter = (val: number) => moment.unix(val).format('L LT')
   const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
 
+  React.useEffect(() => {
+    setMax(Math.max(...data.map(c => c.value)))
+  }, [data])
+
   return (
-    <Card shadow="xs" p="xs">
+    <Card shadow="xs" p="sm">
       <Group position="apart" mb="sm">
-        <Text weight={500}>{title}</Text>
-        <div>
-          <Button component="a" leftIcon={<IconList />} href={useHref(`metrics/${bucket}`)} variant="light" size="xs">view list</Button>
-        </div>
+        <Anchor href={useHref(`/metrics/${bucket}`)}>
+          <Title order={4}>{title}</Title>
+        </Anchor>
+        <Badge size="xl" color="lime">{max}{metricUnit}</Badge>
       </Group>
       <Card.Section>
         <ResponsiveContainer height={150} width="99%">
@@ -37,6 +43,6 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
           </LineChart>
         </ResponsiveContainer>
       </Card.Section>
-    </Card >
+    </Card>
   )
 }
