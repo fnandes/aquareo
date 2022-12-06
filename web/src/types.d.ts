@@ -20,10 +20,3 @@ export type MetricEntry = {
   timespan: number
   value: number
 }
-
-export type ControllableGear = {
-  id: string
-  name: string
-  lastUpdate: number
-  isOn: boolean
-}
