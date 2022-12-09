@@ -7,8 +7,9 @@ import { Config } from '../types'
 import { Home } from './home'
 import { createHashRouter, RouterProvider } from 'react-router-dom'
 import { ModalsProvider } from '@mantine/modals'
-import { AddEntryModal, MetricEntries } from './metrics'
+import { AddEntryModal, MeasurementsList } from './measurements'
 import { Layout } from '../layout'
+import { MeasurementsOverview } from './measurements'
 
 const theme: MantineThemeOverride = {
   primaryColor: 'indigo',
@@ -20,7 +21,8 @@ const router = createHashRouter([{
   element: <Layout />,
   children: [
     { index: true, element: <Home /> },
-    { path: 'metrics/:bucket', element: <MetricEntries /> }
+    { path: 'measurements', element: <MeasurementsOverview /> },
+    { path: 'measurements/:testId', element: <MeasurementsList /> }
   ]
 }])
 

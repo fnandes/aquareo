@@ -1,11 +1,9 @@
 import * as React from 'react'
-import { useMantineTheme, Text, Card, Group, Button } from '@mantine/core'
-import { IconList } from '@tabler/icons'
+import { useMantineTheme, Card, Group, Text } from '@mantine/core'
 import { useQuery } from '@tanstack/react-query'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import * as moment from 'dayjs'
 import * as api from '../../api'
-import { useHref } from 'react-router-dom'
 
 export type MetricCardProps = {
   bucket: string
@@ -19,12 +17,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
   const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
 
   return (
-    <Card shadow="xs" p="xs">
+    <Card shadow="xs" p="sm">
       <Group position="apart" mb="sm">
-        <Text weight={500}>{title}</Text>
-        <div>
-          <Button component="a" leftIcon={<IconList />} href={useHref(`metrics/${bucket}`)} variant="light" size="xs">view list</Button>
-        </div>
+        <Text fw={500}>{title}</Text>
       </Group>
       <Card.Section>
         <ResponsiveContainer height={150} width="99%">
@@ -37,6 +32,6 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
           </LineChart>
         </ResponsiveContainer>
       </Card.Section>
-    </Card >
+    </Card>
   )
 }
