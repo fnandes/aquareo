@@ -44,6 +44,7 @@ export const Navbar: React.FC = () => {
           </Anchor>
           <Group spacing={5}>
             <a href={useHref('/')} className={classes.link}>Dashboard</a>
+            <a href={useHref('/metrics')} className={classes.link}>Metrics</a>
           </Group>
         </div>
       </Container>

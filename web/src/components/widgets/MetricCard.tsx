@@ -12,9 +12,15 @@ export type MetricCardProps = {
 }
 
 export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUnit }) => {
+  const [max, setMax] = React.useState(0)
+
   const { colors } = useMantineTheme()
   const tickFormatter = (val: number) => moment.unix(val).format('L LT')
   const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
+
+  React.useEffect(() => {
+    setMax(Math.max(...data.map(c => c.value)))
+  }, [data])
 
   return (
     <Card shadow="xs" p="sm">
