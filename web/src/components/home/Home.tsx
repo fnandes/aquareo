@@ -12,7 +12,7 @@ export const Home: React.FC = () => {
       <Grid gutter="sm">
         {config?.temperatureController?.enabled ? (
           <Grid.Col xs={6}>
-            <MetricCard bucket="temperature" title="Temperature" metricUnit="C" />
+            <MetricCard bucket="temperature" title="Temperature" />
           </Grid.Col>
         ) : null}
       </Grid>

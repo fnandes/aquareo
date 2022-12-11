@@ -6,6 +6,7 @@
   "browserslist": "> 0.25%, not dead",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve",
+    "extract": "formatjs extract \"web/src/**/*.{ts,tsx}\" --ignore \"web/src/**/*.d.ts\" --format simple",
     "build": "webpack"
   },
   "license": "MIT",
@@ -42,6 +43,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.39.7",
+    "react-intl": "^6.2.5",
     "react-router-dom": "^6.4.3",
     "recharts": "^2.1.13"
   }

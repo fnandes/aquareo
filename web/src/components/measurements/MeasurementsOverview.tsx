@@ -1,5 +1,6 @@
 import { Grid } from '@mantine/core'
 import * as React from 'react'
+import { getMetricName } from '../../utils'
 import { useConfig } from '../../hooks/useConfig'
 import { MetricCard } from '../widgets'
 
@@ -10,11 +11,10 @@ export const MeasurementsOverview: React.FC = () => {
     <>
       <Grid gutter="md">
         {config.customMetrics.length && config.customMetrics.map(metric => (
-          <Grid.Col key={metric.id} sm={6}>
+          <Grid.Col key={metric} sm={6}>
             <MetricCard
-              bucket={`cm_${metric.id}`}
-              title={metric.displayName}
-              metricUnit={metric.metricUnit} />
+              bucket={`cm_${metric}`}
+              title={getMetricName(metric)} />
           </Grid.Col>
         ))}
       </Grid>

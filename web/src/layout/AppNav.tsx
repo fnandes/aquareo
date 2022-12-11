@@ -3,6 +3,7 @@ import { Navbar, NavLink } from '@mantine/core'
 import { IconHome, IconTestPipe } from '@tabler/icons'
 import { NavLink as RouterLink } from 'react-router-dom'
 import { useConfig } from '../hooks/useConfig'
+import { getMetricName } from '../utils'
 
 
 export const AppNav: React.FC = () => {
@@ -15,7 +16,11 @@ export const AppNav: React.FC = () => {
         <NavLink icon={<IconTestPipe size={20} />} label="Test Measurements" childrenOffset={38}>
           <NavLink label="Overview" component={RouterLink} to="/measurements" />
           {customMetrics.map(metric => (
-            <NavLink key={metric.id} label={metric.displayName} component={RouterLink} to={`/measurements/${metric.id}`} />
+            <NavLink
+              key={metric}
+              label={getMetricName(metric)}
+              component={RouterLink}
+              to={`/measurements/${metric}`} />
           ))}
         </NavLink>
       </Navbar.Section>

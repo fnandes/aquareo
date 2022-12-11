@@ -10,25 +10,15 @@
     "snapshotInterval": 30000000
   },
   "customMetrics": [
-    {
-      "id": "ph",
-      "displayName": "Ph",
-      "metricUnit": ""
-    },
-    {
-      "id": "po4",
-      "displayName": "Phosphate",
-      "metricUnit": "ppm"
-    },
-    {
-      "id": "ca",
-      "displayName": "Calcium",
-      "metricUnit": "ppm"
-    },
-    {
-      "id": "kh",
-      "displayName": "kH",
-      "metricUnit": ""
-    }
+    "ph",
+    "salinity",
+    "kh",
+    "ca",
+    "mg",
+    "nh4",
+    "no2",
+    "no3",
+    "po4",
+    "co2"
   ]
 }

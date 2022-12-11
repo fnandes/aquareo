@@ -8,19 +8,12 @@ import * as api from '../../api'
 export type MetricCardProps = {
   bucket: string
   title: string
-  metricUnit: string
 }
 
-export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUnit }) => {
-  const [max, setMax] = React.useState(0)
-
+export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title }) => {
   const { colors } = useMantineTheme()
   const tickFormatter = (val: number) => moment.unix(val).format('L LT')
   const { data = [] } = useQuery(['metric', bucket], api.metrics(bucket).fetchAll)
-
-  React.useEffect(() => {
-    setMax(Math.max(...data.map(c => c.value)))
-  }, [data])
 
   return (
     <Card shadow="xs" p="sm">
@@ -34,7 +27,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({ bucket, title, metricUni
             <XAxis dataKey="timespan" tickFormatter={tickFormatter} stroke={colors.violet[5]} fontSize="small" />
             <YAxis stroke={colors.violet[5]} />
             <Tooltip />
-            <Line type="monotone" connectNulls dataKey="value" stroke={colors.grape[5]} strokeWidth={3} unit={metricUnit} />
+            <Line type="monotone" connectNulls dataKey="value" stroke={colors.grape[5]} strokeWidth={3} />
           </LineChart>
         </ResponsiveContainer>
       </Card.Section>

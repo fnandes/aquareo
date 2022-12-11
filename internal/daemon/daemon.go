@@ -55,8 +55,8 @@ func (a *daemon) Start() error {
 		a.ctrl.Install(tc)
 	}
 
-	for _, c := range cfg.CustomMetrics {
-		if err := s.CreateBucket(fmt.Sprintf("cm_%s", c.Id)); err != nil {
+	for _, cm := range cfg.CustomMetrics {
+		if err := s.CreateBucket(fmt.Sprintf("cm_%s", cm)); err != nil {
 			log.Fatal(err)
 		}
 	}
