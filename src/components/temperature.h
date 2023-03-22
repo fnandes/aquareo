@@ -10,12 +10,13 @@ class TemperatureSensor : public Sensor {
     DallasTemperature &sensors;
     uint8_t deviceCount{0};
     std::array<float, 2> currentTemperatures = {0.0f, 0.0f};
+    unsigned long lastUpdate{0};
 
   public:
     TemperatureSensor(DallasTemperature &sensors) : sensors{sensors} {}
 
     void setup() override;
-    void update() override;
+    void loop(unsigned long tick) override;
     uint8_t getDeviceCount() const override;
     float getCurrentValueByIndex(uint8_t idx) const override;
 };

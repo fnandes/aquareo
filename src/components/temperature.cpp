@@ -2,19 +2,23 @@
 
 namespace aquareo {
 
+const int SENSOR_UPDATE_INTERVAL = 5000;
+
 void TemperatureSensor::setup()
 {
     sensors.begin();
     deviceCount = sensors.getDeviceCount();
 }
 
-void TemperatureSensor::update()
+void TemperatureSensor::loop(unsigned long tick)
 {
-    sensors.requestTemperatures();
+    if (tick - lastUpdate >= SENSOR_UPDATE_INTERVAL) {
+        sensors.requestTemperatures();
 
-    for (size_t i = 0; i < 2; i++) {
-        float temperature = sensors.getTempCByIndex(i);
-        currentTemperatures[i] = temperature;
+        for (size_t i = 0; i < 2; i++) {
+            float temperature = sensors.getTempCByIndex(i);
+            currentTemperatures[i] = temperature;
+        }
     }
 }
 
