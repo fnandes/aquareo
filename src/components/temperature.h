@@ -1,3 +1,5 @@
+#pragma once
+
 #include "configuration.h"
 #include "controller.h"
 #include <DallasTemperature.h>

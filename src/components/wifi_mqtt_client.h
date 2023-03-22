@@ -1,11 +1,14 @@
+#pragma once
+
 #include <PubSubClient.h>
+#include <WiFi.h>
 #include <controller.h>
 
 namespace aquareo {
 
 class WiFiMQTTClient : public MQTTClient {
   private:
-    bool isConnected{false};
+    bool isBrokerConnected{false};
     PubSubClient &client;
 
   public:

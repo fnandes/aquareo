@@ -1,9 +1,18 @@
+#pragma once
+
 // base settings
-#define MAIN_LOOP_INTERVAL 1000
-#define TEMPERATURE_SENSOR_INTERVAL 3000
-
-// Temperature sensors settings
-#define USE_ONE_WIRE_TEMPERATURE_SENSOR
-#define TEMPERATURE_SENSOR_BUS_PIN 12
-
-// Display settings
+#define AQ_MAIN_LOOP_TIME 500
+// temperature sensor
+#define AQ_TP_SENSOR_TIME 3000
+#define AQ_TP_SENSOR_BUS_PIN 4
+// ph sensor
+#define AQ_PH_SENSOR_TIME 10000
+// TFT display
+#define AQ_DISPLAY_UPDATE_TIME 5000
+// WiFi & MQTT
+#define AQ_WIFI_SSID ""
+#define AQ_WIFI_PWD ""
+#define AQ_MQTT_PUBLISH_TIME 10000
+#define AQ_MQTT_CONN_ID "ESP32"
+#define AQ_MQTT_CONN_HOST "raspberrypi.local"
+#define AQ_MQTT_CONN_PORT 1883

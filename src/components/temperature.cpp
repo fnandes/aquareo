@@ -2,8 +2,6 @@
 
 namespace aquareo {
 
-const int SENSOR_UPDATE_INTERVAL = 5000;
-
 void TemperatureSensor::setup()
 {
     sensors.begin();
@@ -12,7 +10,7 @@ void TemperatureSensor::setup()
 
 void TemperatureSensor::loop(unsigned long tick)
 {
-    if (tick - lastUpdate >= SENSOR_UPDATE_INTERVAL) {
+    if (tick - lastUpdate >= AQ_TP_SENSOR_TIME) {
         sensors.requestTemperatures();
 
         for (size_t i = 0; i < 2; i++) {

@@ -12,9 +12,12 @@
 #include <WiFi.h>
 #include <Wire.h>
 
+const char *ssid = AQ_WIFI_SSID;
+const char *password = AQ_WIFI_PWD;
+
 using namespace aquareo;
 
-OneWire bus(4);
+OneWire bus(AQ_TP_SENSOR_BUS_PIN);
 DallasTemperature ds18b20(&bus);
 TemperatureSensor tempSensor(ds18b20);
 TemperatureSensor phSensor(ds18b20); // TODO: use PH sensor
@@ -32,6 +35,7 @@ void setup()
 {
     Serial.begin(115200);
 
+    WiFi.begin(ssid, password);
     controller.setup();
 }
 

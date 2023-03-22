@@ -36,12 +36,13 @@ class MQTTClient {
 
 class Controller {
   private:
-    Sensor &ph;
-    Sensor &temperature;
-    Display &display;
     MQTTClient &mqtt;
+    Display &display;
+    Sensor &temperature;
+    Sensor &ph;
     unsigned long lastDisplayUpdate{0};
     unsigned long lastLoop{0};
+    unsigned long lastPublish{0};
 
   public:
     Controller(MQTTClient &mqtt, Display &display, Sensor &temperature,
