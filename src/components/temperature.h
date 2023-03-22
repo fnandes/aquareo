@@ -1,5 +1,5 @@
 #include "configuration.h"
-#include "core/sensor.h"
+#include "controller.h"
 #include <DallasTemperature.h>
 
 namespace aquareo {

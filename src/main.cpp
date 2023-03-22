@@ -1,7 +1,7 @@
 #include "components/temperature.h"
 #include "components/tft_display.h"
 #include "configuration.h"
-#include "core/controller.h"
+#include "controller.h"
 #include <Arduino.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>

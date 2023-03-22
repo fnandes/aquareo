@@ -1,5 +1,4 @@
-#include "core/controller.h"
-#include "core/sensor.h"
+#include "controller.h"
 
 namespace aquareo {
 

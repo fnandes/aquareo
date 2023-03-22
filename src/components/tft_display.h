@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/display.h"
+#include "controller.h"
 #include <U8g2lib.h>
 
 namespace aquareo {
