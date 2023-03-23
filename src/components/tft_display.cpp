@@ -2,7 +2,7 @@
 
 namespace aquareo {
 
-TFTDisplay::TFTDisplay(U8G2 &u8g2) : u8g2{u8g2} {}
+TFTDisplay::TFTDisplay(U8G2& u8g2) : u8g2{u8g2} {}
 
 void TFTDisplay::print(displayData_t data)
 {

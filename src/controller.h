@@ -12,41 +12,40 @@ struct displayData_t {
 
 class Display {
   public:
-    Display() = default;
-    virtual void setup() = 0;
+    Display()                              = default;
+    virtual void setup()                   = 0;
     virtual void print(displayData_t data) = 0;
 };
 
 class Sensor {
   public:
-    Sensor() = default;
-    virtual void setup() = 0;
-    virtual void loop(unsigned long tick) = 0;
-    virtual uint8_t getDeviceCount() const = 0;
-    virtual float getCurrentValueByIndex(uint8_t idx) const = 0;
+    Sensor()                                                  = default;
+    virtual void    setup()                                   = 0;
+    virtual void    loop(unsigned long tick)                  = 0;
+    virtual uint8_t getDeviceCount() const                    = 0;
+    virtual float   getCurrentValueByIndex(uint8_t idx) const = 0;
 };
 
 class MQTTClient {
   public:
-    MQTTClient() = default;
-    virtual void setup() = 0;
-    virtual void loop(unsigned long tick) = 0;
-    virtual void sendSensorData(char *ns, float val) = 0;
+    MQTTClient()                                     = default;
+    virtual void setup()                             = 0;
+    virtual void loop(unsigned long tick)            = 0;
+    virtual void sendSensorData(char* ns, float val) = 0;
 };
 
 class Controller {
   private:
-    MQTTClient &mqtt;
-    Display &display;
-    Sensor &temperature;
-    Sensor &ph;
+    MQTTClient&   mqtt;
+    Display&      display;
+    Sensor&       temperature;
+    Sensor&       ph;
     unsigned long lastDisplayUpdate{0};
     unsigned long lastLoop{0};
     unsigned long lastPublish{0};
 
   public:
-    Controller(MQTTClient &mqtt, Display &display, Sensor &temperature,
-               Sensor &ph);
+    Controller(MQTTClient& mqtt, Display& display, Sensor& temperature, Sensor& ph);
     ~Controller();
 
     void setup();

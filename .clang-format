@@ -1,3 +1,8 @@
 BasedOnStyle: LLVM
+Language: Cpp
 IndentWidth: 4
 BreakBeforeBraces: Stroustrup
+ColumnLimit: 130
+PointerAlignment: Left
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true

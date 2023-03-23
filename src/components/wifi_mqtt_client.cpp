@@ -4,7 +4,7 @@
 
 namespace aquareo {
 
-WiFiMQTTClient::WiFiMQTTClient(PubSubClient &client) : client{client} {}
+WiFiMQTTClient::WiFiMQTTClient(PubSubClient& client) : client{client} {}
 
 void WiFiMQTTClient::loop(unsigned long tick)
 {
@@ -21,7 +21,7 @@ void WiFiMQTTClient::setup()
     client.connect(AQ_MQTT_CONN_ID);
 }
 
-void WiFiMQTTClient::sendSensorData(char *ns, float val)
+void WiFiMQTTClient::sendSensorData(char* ns, float val)
 {
     if (isBrokerConnected) {
         char tempStr[8];

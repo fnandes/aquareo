@@ -3,7 +3,6 @@
 #include "components/wifi_mqtt_client.h"
 #include "configuration.h"
 #include "controller.h"
-#include <Arduino.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
 #include <PubSubClient.h>
@@ -11,22 +10,23 @@
 #include <U8g2lib.h>
 #include <WiFi.h>
 #include <Wire.h>
+#include <esp32-hal.h>
 
-const char *ssid = AQ_WIFI_SSID;
-const char *password = AQ_WIFI_PWD;
+const char* ssid     = AQ_WIFI_SSID;
+const char* password = AQ_WIFI_PWD;
 
 using namespace aquareo;
 
-OneWire bus(AQ_TP_SENSOR_BUS_PIN);
+OneWire           bus(AQ_TP_SENSOR_BUS_PIN);
 DallasTemperature ds18b20(&bus);
 TemperatureSensor tempSensor(ds18b20);
 TemperatureSensor phSensor(ds18b20); // TODO: use PH sensor
 
 U8G2_SH1106_128X64_NONAME_1_HW_I2C sh1106(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
-TFTDisplay display(sh1106);
+TFTDisplay                         display(sh1106);
 
-WiFiClient wifi;
-PubSubClient pubSub(wifi);
+WiFiClient     wifi;
+PubSubClient   pubSub(wifi);
 WiFiMQTTClient mqtt(pubSub);
 
 aquareo::Controller controller(mqtt, display, tempSensor, phSensor);

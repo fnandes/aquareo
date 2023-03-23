@@ -14,16 +14,13 @@ void TemperatureSensor::loop(unsigned long tick)
         sensors.requestTemperatures();
 
         for (size_t i = 0; i < 2; i++) {
-            float temperature = sensors.getTempCByIndex(i);
+            float temperature      = sensors.getTempCByIndex(i);
             currentTemperatures[i] = temperature;
         }
     }
 }
 
-float TemperatureSensor::getCurrentValueByIndex(uint8_t idx) const
-{
-    return currentTemperatures[idx];
-}
+float TemperatureSensor::getCurrentValueByIndex(uint8_t idx) const { return currentTemperatures[idx]; }
 
 uint8_t TemperatureSensor::getDeviceCount() const { return deviceCount; }
 
