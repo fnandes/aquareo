@@ -16,7 +16,7 @@ class WiFiMQTTClient : public MQTTClient {
 
     void setup() override;
     void loop(unsigned long tick) override;
-    void sendSensorData(char* ns, float val) override;
+    void sendSensorData(const char* ns, float val) override;
 };
 
 } // namespace aquareo

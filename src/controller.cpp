@@ -3,6 +3,10 @@
 
 namespace aquareo {
 
+const char* sensor_temp1_ns = "aquareo/sensor/temperature_1";
+const char* sensor_temp2_ns = "aquareo/sensor/temperature_2";
+const char* sensor_ph_ns    = "aquareo/sensor/ph";
+
 Controller::Controller(MQTTClient& mqtt, Display& display, Sensor& temperature, Sensor& ph)
     : mqtt{mqtt}, display{display}, temperature{temperature}, ph{ph}
 {
@@ -43,9 +47,9 @@ void Controller::loop(unsigned long tick)
         if (tick - lastPublish >= AQ_MQTT_PUBLISH_TIME) {
             lastPublish = tick;
 
-            mqtt.sendSensorData("aquareo/sensor/temperature_1", temp_val_1);
-            mqtt.sendSensorData("aquareo/sensor/temperature_2", temp_val_2);
-            mqtt.sendSensorData("aquareo/sensor/ph", ph_val);
+            mqtt.sendSensorData(sensor_temp1_ns, temp_val_1);
+            mqtt.sendSensorData(sensor_temp2_ns, temp_val_2);
+            mqtt.sendSensorData(sensor_ph_ns, ph_val);
         }
     }
 }

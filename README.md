@@ -1,15 +1,11 @@
-[![build](https://github.com/fnandes/aquareo/actions/workflows/go.yml/badge.svg)](https://github.com/fnandes/aquareo/actions/workflows/go.yml)
 [![CodeQL](https://github.com/fnandes/aquareo/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/fnandes/aquareo/actions/workflows/codeql-analysis.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/pedrobfernandes/aquareo)](https://goreportcard.com/report/github.com/pedrobfernandes/aquareo)
 
 # Aquareo
 
-**Aquareo** is an open source software and collection of tutorials that enables to you build your own aquarium controller with a Raspberry PI and several cheap electronic components.
-
-![dashboard](docs/dashboard.png)
+**Aquareo** is an open source software and collection of tutorials that enables to you build your own aquarium controller with Arduino/ESP32/ESP8266 and several cheap electronic components.
 
 ### 🩺 Monitoring
-Check your aquarium temperature, Ph and salinity in a single dashboard.
+Check your aquarium temperature, Ph and salinity in any MQTT-compatible home automation solution, like Node-Red.
 
 ### 📟 Temperature Controller
 Automatic turn on/off your header and fan/chiller to keep a stable temperature in your tank.
@@ -26,18 +22,27 @@ And more ...
 Despite everything is meant to be built in a single box, you don't need to build all features at one. For instance: you can build only the monitoring component, add the dosing automation later, or use only the auto top-off system.
 
 ### 💸 Easy and inexpensive to build
-Everything is built using a **Raspberry Pi** and several electronic components. You can easly find everything on Amazon/Ebay. A basic electronic knowledge is required, but all tutorials will be easy to understand with simple diagrams.
+Everything is built using some **Arduino compatible** boards and several electronic components. You can easly find everything on Amazon/Ebay/AliExpress. A basic electronic knowledge is required, but all tutorials will be easy to understand with simple diagrams.
 
 ## Roadmap
 
-- [x] Dashboard
-- [ ] Debian package and installation tutorials
+- [x] MQTT Integration
+- [ ] Installation tutorials
 - [ ] Auto update system
 - [ ] Auto top-off
 - [x] ds18b20 (temperature) integration
-- [ ] Ph sensor integration
+- [x] Ph sensor integration
 - [ ] Salinity sensor integration
 - [ ] Gembird powerstrip integration
 - [ ] Temperature controller
 - [ ] Dosing controller
 - [ ] 3D-printed water test automation station
+
+## Currently implemented drivers
+
+| Module | Drivers |
+| --- | --- |
+| Board | ESP32 |
+| Display | SSD1306 |
+| Temperature | DS18B20 |
+| PH | generic PH4502C |

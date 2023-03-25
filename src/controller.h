@@ -28,10 +28,10 @@ class Sensor {
 
 class MQTTClient {
   public:
-    MQTTClient()                                     = default;
-    virtual void setup()                             = 0;
-    virtual void loop(unsigned long tick)            = 0;
-    virtual void sendSensorData(char* ns, float val) = 0;
+    MQTTClient()                                           = default;
+    virtual void setup()                                   = 0;
+    virtual void loop(unsigned long tick)                  = 0;
+    virtual void sendSensorData(const char* ns, float val) = 0;
 };
 
 class Controller {

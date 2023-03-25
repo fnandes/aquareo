@@ -21,7 +21,7 @@ void WiFiMQTTClient::setup()
     client.connect(AQ_MQTT_CONN_ID);
 }
 
-void WiFiMQTTClient::sendSensorData(char* ns, float val)
+void WiFiMQTTClient::sendSensorData(const char* ns, float val)
 {
     if (isBrokerConnected) {
         char tempStr[8];
