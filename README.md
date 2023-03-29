@@ -2,10 +2,14 @@
 
 # Aquareo
 
+![dashboard](docs/circuit.jpg)
+
 **Aquareo** is an open source software and collection of tutorials that enables to you build your own aquarium controller with Arduino/ESP32/ESP8266 and several cheap electronic components.
 
 ### 🩺 Monitoring
-Check your aquarium temperature, Ph and salinity in any MQTT-compatible home automation solution, like Node-Red.
+Check your aquarium temperature, Ph and salinity in any MQTT-compatible home automation solution, like Home Assistant.
+
+![dashboard](docs/haas.png)
 
 ### 📟 Temperature Controller
 Automatic turn on/off your header and fan/chiller to keep a stable temperature in your tank.

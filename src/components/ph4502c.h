@@ -1,20 +1,26 @@
-#include "controller.h"
+#include "sensor.h"
 #include <Adafruit_ADS1X15.h>
 
 namespace aquareo {
 
 class PH4502PHSensor : public Sensor {
-  private:
-    Adafruit_ADS1115& ads;
-    float             currentVal{0};
-    unsigned long     lastUpdate{0};
-
   public:
     PH4502PHSensor(Adafruit_ADS1115& ads);
-    void    setup() override;
-    void    loop(unsigned long tick) override;
-    uint8_t getDeviceCount() const override;
-    float   getCurrentValueByIndex(uint8_t idx) const override;
+
+    const char* get_device_class() override;
+    const char* get_name() override;
+    const char* get_unique_id() override;
+    const char* get_unit_of_measurement() override;
+
+    void  setup() override;
+    void  loop(unsigned long tick) override;
+    bool  get_state() const override;
+    float get_measurement() const override;
+
+  private:
+    Adafruit_ADS1115& ads_;
+    float             current_val_{0};
+    unsigned long     last_update_{0};
 };
 
 } // namespace aquareo

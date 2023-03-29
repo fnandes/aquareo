@@ -1,27 +1,28 @@
 #include "components/temperature.h"
+#include <string>
 
 namespace aquareo {
 
-void TemperatureSensor::setup()
-{
-    sensors.begin();
-    deviceCount = sensors.getDeviceCount();
-}
+const char* TemperatureSensor::get_device_class() { return "temperature"; }
+
+const char* TemperatureSensor::get_name() { return "temperature"; }
+
+const char* TemperatureSensor::get_unique_id() { return unique_id_; }
+
+const char* TemperatureSensor::get_unit_of_measurement() { return "°C"; }
+
+void TemperatureSensor::setup() {}
 
 void TemperatureSensor::loop(unsigned long tick)
 {
-    if (tick - lastUpdate >= AQ_TP_SENSOR_TIME) {
-        sensors.requestTemperatures();
-
-        for (size_t i = 0; i < 2; i++) {
-            float temperature      = sensors.getTempCByIndex(i);
-            currentTemperatures[i] = temperature;
-        }
+    if (tick - last_update_ >= AQ_TP_SENSOR_TIME) {
+        sensors_.requestTemperatures();
+        current_val_ = sensors_.getTempCByIndex(device_index_);
     }
 }
 
-float TemperatureSensor::getCurrentValueByIndex(uint8_t idx) const { return currentTemperatures[idx]; }
+float TemperatureSensor::get_measurement() const { return current_val_; }
 
-uint8_t TemperatureSensor::getDeviceCount() const { return deviceCount; }
+bool TemperatureSensor::get_state() const { return sensors_.isConnected(&device_index_); }
 
 } // namespace aquareo
