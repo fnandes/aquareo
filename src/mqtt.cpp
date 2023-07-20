@@ -1,22 +1,45 @@
-#include "types.h"
 #include "mqtt.h"
-#include <PubSubClient.h>
+#include "configuration.h"
+#include "types.h"
 #include <Arduino.h>
+#include <PubSubClient.h>
+#include <WiFi.h>
+#include <esp_log.h>
 
-void init_mqtt(PubSubClient *client)
-{
-    client->connect();
-}
+static const char* TAG = "MQTT";
 
-void publish_mqtt_sensor_data(PubSubClient *client, sensorData_t data)
+static PubSubClient* client;
+static unsigned long last_run = 0;
+
+void init_mqtt(WiFiClient* wifi)
 {
-    if (!client->connected())
-    {
-        Serial.println("MQTT Broker not connected! trying to connect again ...");
-        client->connect();
+    ESP_LOGI(TAG, "init");
+
+    client = new PubSubClient(*wifi);
+
+    if (!wifi->connected()) {
+        ESP_LOGE(TAG, "WIFI not connected!");
         return;
     }
 
-    client->publish("aquareo/sensor/temperature", data.temperature);
-    client->publish("aquareo/sensor/ph", data.ph)
+    if (client->connect(AQ_MQTT_CONN_ID)) {
+        ESP_LOGI(TAG, "connected");
+    }
+}
+
+void publish_mqtt_sensor_data(const sensorData_t data)
+{
+    unsigned long ticks = millis();
+    if (ticks - last_run <= 5000) {
+        last_run = ticks;
+
+        if (client->connected()) {
+            char tmp_str[8], ph_str[8];
+            dtostrf(data.temperature, 1, 2, tmp_str);
+            dtostrf(data.ph, 1, 2, ph_str);
+
+            client->publish("aquareo/sensor/temperature", tmp_str);
+            client->publish("aquareo/sensor/ph", ph_str);
+        }
+    }
 }

@@ -2,6 +2,7 @@
 
 #define WIFI_SSID "sssss"
 #define WIFI_PASS "pppppp"
+#define AQ_MQTT_CONN_ID "ESP32"
 #define AQ_SENSOR_TEMP 1
 // oneWire bus for the temperature sensors
 #define AQ_TEMP_SENSOR_BUS 4

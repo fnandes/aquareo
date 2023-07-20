@@ -2,6 +2,6 @@
 #include "configuration.h"
 #include <DallasTemperature.h>
 
-void init_temperature_sensors(DallasTemperature *sensors);
+void init_temperature_sensors();
 
-float get_temperature(DallasTemperature *sensors);
+float get_temperature();

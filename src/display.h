@@ -1,7 +1,7 @@
 #pragma once
-#include <LiquidCrystal_I2C.h>
 #include "types.h"
+#include <LiquidCrystal_I2C.h>
 
-void init_display(LiquidCrystal_I2C *lcd);
+void init_display();
 
-void update_display_data(LiquidCrystal_I2C *lcd, sensorData_t data);
+void update_display_data(sensorData_t data);
