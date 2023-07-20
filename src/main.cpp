@@ -1,55 +1,43 @@
-#include "components/ph4502c.h"
-#include "components/temperature.h"
-#include "components/tft_display.h"
-#include "configuration.h"
-#include "controller.h"
-#include <Adafruit_ADS1X15.h>
-#include <DallasTemperature.h>
+#include <Arduino.h>
 #include <OneWire.h>
-#include <PubSubClient.h>
-#include <SPI.h>
-#include <U8g2lib.h>
+#include <DallasTemperature.h>
 #include <WiFi.h>
-#include <Wire.h>
-#include <esp32-hal.h>
+#include <LiquidCrystal_I2C.h>
+#include "temperature.h"
+#include "configuration.h"
+#include "types.h"
+#include "display.h"
+#include "WiFi.h"
+#include "PubSubClient.h"
 
-const char* ssid     = AQ_WIFI_SSID;
-const char* password = AQ_WIFI_PWD;
-
-using namespace aquareo;
-
-OneWire           bus(AQ_TP_SENSOR_BUS_PIN);
+OneWire bus(AQ_TEMP_SENSOR_BUS);
 DallasTemperature ds18b20(&bus);
-TemperatureSensor tempSensor0(ds18b20, "temperature_0", 0);
-TemperatureSensor tempSensor1(ds18b20, "temperature_1", 1);
 
-U8G2_SH1106_128X64_NONAME_1_HW_I2C sh1106(U8G2_R0, /* reset=*/U8X8_PIN_NONE);
-TFTDisplay                         display(sh1106);
+// lcd
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-WiFiClient   wifi;
+// network
+WiFiClient wifi;
 PubSubClient pubSub(wifi);
-
-// PH
-Adafruit_ADS1115 ads;
-PH4502PHSensor   phSensor(ads);
-
-Sensor* sensors[]{&tempSensor0, &tempSensor1, &phSensor};
-
-aquareo::Controller controller(pubSub, display, sensors);
 
 void setup()
 {
     Serial.begin(115200);
-
+    WiFi.begin(WIFI_SSID, WIFI_PASS);
     ds18b20.begin();
-    Wire.begin();
-    WiFi.begin(ssid, password);
 
-    controller.setup();
+    init_temperature_sensors(&ds18b20);
+    init_display(&lcd);
 }
 
 void loop()
 {
-    unsigned long tick = millis();
-    controller.loop(tick);
+    const sensorData_t data{
+        .temperature = get_temperature(&ds18b20),
+        .ph = 7, // TODO: make this work
+    };
+
+    update_display_data(&lcd, data);
+
+    delay(2000);
 }
