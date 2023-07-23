@@ -1,7 +1,10 @@
 #pragma once
-#include "types.h"
-#include <LiquidCrystal_I2C.h>
+#include "SensorMonitor.h"
 
-void init_display();
-
-void update_display_data(sensorData_t data);
+class Display {
+  public:
+    Display() {}
+    void setup();
+    void loop(const unsigned long ticks);
+    void setData(SensorReading_t* data);
+};
