@@ -1,4 +1,5 @@
 #include "config.h"
+#include "display.h"
 #include "mqtt.h"
 #include "tempsensor.h"
 #include "wifi.h"
@@ -12,7 +13,9 @@
 static const char* TAG = "AQ";
 
 static aquareo_state_t state = {
-    .current_temp = {0, 0},
+    .current_temp   = {0, 0},
+    .wifi_connected = false,
+    .mqtt_connected = false,
 };
 
 static int64_t mqtt_last_publish = 0;
@@ -28,8 +31,8 @@ void app_main(void)
 {
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(nvs_flash_init());
-    ESP_ERROR_CHECK(esp_timer_early_init());
 
+    display_init();
     tempsensor_init();
     wifi_init();
     mqtt_init();
@@ -38,6 +41,11 @@ void app_main(void)
         int64_t ticks = esp_timer_get_time() / 1000;
 
         app_update_sensor_reading();
+        state.mqtt_connected = mqtt_is_connected();
+        state.wifi_connected = wifi_is_connected();
+
+        display_write_state(&state);
+
         ESP_LOGI(TAG, "temp_0: %f", state.current_temp[0]);
         ESP_LOGI(TAG, "temp_1: %f", state.current_temp[1]);
 

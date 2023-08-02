@@ -27,20 +27,20 @@ void tempsensor_init()
     ESP_ERROR_CHECK(onewire_new_device_iter(bus, &iter));
 
     onewire_device_t next_onewire_device;
+    ds18b20_config_t ds_cfg        = {};
     esp_err_t        search_result = ESP_OK;
-    ESP_LOGI(TAG, "Device iterator created, start searching...");
+    int              attempts      = 0;
+
     do {
         search_result = onewire_device_iter_get_next(iter, &next_onewire_device);
         if (search_result == ESP_OK) {
-            ds18b20_config_t ds_cfg = {};
             if (ds18b20_new_device(&next_onewire_device, &ds_cfg, &ds18b20s_devices[ds18b20_device_count]) == ESP_OK) {
-                ESP_LOGI(TAG, "Found a DS18B20[%d], address: %016llX", ds18b20_device_count, next_onewire_device.address);
                 ds18b20_device_count++;
             }
         }
-    } while (search_result != ESP_ERR_NOT_FOUND);
+    } while (search_result != ESP_ERR_NOT_FOUND && ++attempts <= AQ_ONEWIRE_MAX_SEARCH_ATTEMPTS);
+    ESP_LOGI(TAG, "%d devices found", ds18b20_device_count);
     ESP_ERROR_CHECK(onewire_del_device_iter(iter));
-    ESP_LOGI(TAG, "Searching done, %d DS18B20 device(s) found", ds18b20_device_count);
 }
 
 float tempsensor_read_temperature(int index)

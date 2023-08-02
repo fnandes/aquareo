@@ -3,6 +3,12 @@
   "idf.portWin": "COM3",
   "idf.flashType": "UART",
   "files.associations": {
-    "ds18b20.h": "c"
+    "ds18b20.h": "c",
+    "wifi.h": "c",
+    "onewire_bus.h": "c",
+    "onewire_bus_impl_rmt.h": "c",
+    "onewire_types.h": "c",
+    "onewire_bus_interface.h": "c",
+    "sdkconfig.h": "c"
   }
 }
