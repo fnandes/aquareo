@@ -1,0 +1,51 @@
+﻿{
+  "configurations": [
+    {
+      "name": "ESP-IDF_5_1-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\build",
+      "installRoot": "${projectDir}\\install",
+      "cmakeCommandArgs": "--warn-uninitialized",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [
+        "linux_x64"
+      ],
+      "environments": [
+        {
+          "IDF_TOOLS_PATH": "C:\\Espressif",
+          "IDF_PATH": "${env.IDF_TOOLS_PATH}\\frameworks\\esp-idf-v5.1",
+          "IDF_PYTHON_ENV_PATH": "${env.IDF_TOOLS_PATH}\\python_env\\idf5.1_py3.11_env\\",
+          "IDF_NINJA_PATH": "C:\\Espressif\\tools\\ninja\\1.10.2",
+          "XTENSA_ESP32_PATH": "${env.IDF_TOOLS_PATH}\\tools\\xtensa-esp32-elf\\esp-12.2.0_20230208\\xtensa-esp32-elf\\bin",
+          "PATH": "${env.XTENSA_ESP32_PATH};${env.IDF_NINJA_PATH};${env.IDF_PYTHON_ENV_PATH}\\Scripts;${env.IDF_TOOLS_PATH}\\tools;${env.IDF_PATH};${env.PATH}",
+          "environment": "linux_x64"
+        }
+      ],
+      "variables": [
+        {
+          "name": "IDF_TARGET",
+          "value": "esp32",
+          "type": "STRING"
+        },
+        {
+          "name": "CCACHE_ENABLE",
+          "value": "1",
+          "type": "STRING"
+        },
+        {
+          "name": "CMAKE_MAKE_PROGRAM",
+          "value": "${env.IDF_NINJA_PATH}\\ninja.exe",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "ESP_PLATFORM",
+          "value": "1",
+          "type": "STRING"
+        }
+      ],
+      "intelliSenseMode": "windows-clang-x64"
+    }
+  ]
+}
